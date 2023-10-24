@@ -45,7 +45,8 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions): PluginOption {
     return {
       name: 'vite-mui-theme-injection-plugin',
       load(id) {
-        if (id.endsWith('@mui/zero-runtime/styles.css')) {
+        const isZeroRuntimStyles = id.endsWith('zero-runtime/styles.css');
+        if (isZeroRuntimStyles) {
           return {
             code: generateCss(
               {
@@ -86,16 +87,20 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions): PluginOption {
         if (!extensions.some((ext) => filename.endsWith(ext))) {
           return null;
         }
-        const result = await transformAsync(code, {
-          filename,
-          babelrc: false,
-          configFile: false,
-          plugins: [['@mui/zero-tag-processor/pre-linaria-plugin']],
-        });
-        return {
-          code: result?.code ?? code,
-          map: result?.map,
-        };
+        try {
+          const result = await transformAsync(code, {
+            filename,
+            babelrc: false,
+            configFile: false,
+            plugins: [['@mui/zero-runtime/exports/sx-plugin']],
+          });
+          return {
+            code: result?.code ?? code,
+            map: result?.map,
+          };
+        } catch (ex) {
+          console.error(ex);
+        }
       },
     };
   }

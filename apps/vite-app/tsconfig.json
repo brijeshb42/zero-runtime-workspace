@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "react-jsx"
+  },
+  "references": [
+    {
+      "path": "../../packages/zero-runtime"
+    },
+    {
+      "path": "../../packages/zero-vite-plugin"
+    },
+    {
+      "path": "../local-ui-lib"
+    }
+  ]
+}

@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist types",
-    "watch": "tsup --watch",
+    "watch": "tsup --watch --clean false",
     "build": "tsup",
     "typecheck": "tsc --noEmit -p ."
   },
@@ -20,6 +20,7 @@
     "@babel/parser": "^7.23.0",
     "@babel/types": "^7.23.0",
     "@emotion/css": "^11.11.2",
+    "@emotion/styled": "^11.11.0",
     "@linaria/tags": "^4.5.4",
     "@linaria/utils": "^4.5.3",
     "@mui/system": "^5.14.14",
@@ -46,10 +47,10 @@
   },
   "linaria": {
     "tags": {
-      "styled": "exports/styled.js",
-      "default": "exports/styled.js",
-      "sx": "exports/sx.js",
-      "keyframes": "exports/keyframes.js"
+      "styled": "./exports/styled.js",
+      "default": "./exports/styled.js",
+      "sx": "./exports/sx.js",
+      "keyframes": "./exports/keyframes.js"
     }
   },
   "files": [

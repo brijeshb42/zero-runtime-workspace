@@ -11,7 +11,7 @@ const baseConfig = {
 export default defineConfig([
   {
     ...baseConfig,
-    entry: ['./src/index.ts', './src/theme.ts', './pre-linaria-plugin'],
+    entry: ['./src/index.ts', './src/theme.ts'],
   },
   {
     ...baseConfig,
@@ -20,7 +20,7 @@ export default defineConfig([
   },
   {
     ...baseConfig,
-    entry: ['./src/utils/index.ts'],
+    entry: ['./src/utils/index.ts', './src/utils/pre-linaria-plugin.ts'],
     outDir: 'utils',
   },
 ]);

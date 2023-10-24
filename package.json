@@ -8,7 +8,10 @@
   ],
   "scripts": {
     "build": "turbo build",
+    "build:app": "turbo build:app",
     "clean": "turbo clean",
+    "preview": "turbo preview",
+    "start": "turbo start",
     "typecheck": "turbo typecheck",
     "watch": "turbo watch"
   },

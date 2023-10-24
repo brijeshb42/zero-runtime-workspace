@@ -12,17 +12,13 @@
     "clean": {
       "cache": false
     },
-    "watch": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["types"]
-    },
     "start": {
       "cache": false,
       "persistent": true,
       "dependsOn": ["^start"]
     },
     "preview": {
+      "cache": false,
       "dependsOn": ["build:app"]
     },
     "types": {
@@ -30,6 +26,10 @@
       "outputs": ["types/**", "dist/**"]
     },
     "typecheck": {
+      "cache": false
+    },
+    "watch": {
+      "dependsOn": ["types", "build"],
       "cache": false
     }
   }

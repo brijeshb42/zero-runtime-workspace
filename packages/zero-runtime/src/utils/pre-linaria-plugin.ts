@@ -1,8 +1,8 @@
 import { addNamed } from '@babel/helper-module-imports';
 import { declare } from '@babel/helper-plugin-utils';
-import { sxObjectExtractor } from './utils/sxObjectExtractor';
+import { sxObjectExtractor } from './sxObjectExtractor';
 
-const babelPlugin = declare((api) => {
+export const babelPlugin = declare((api) => {
   api.assertVersion(7);
   const { types: t } = api;
   return {
@@ -78,5 +78,3 @@ const babelPlugin = declare((api) => {
     },
   };
 });
-
-export default babelPlugin;
