@@ -1,0 +1,25 @@
+{
+  "name": "zero-runtime",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "./packages/*",
+    "./website"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "clean": "turbo clean",
+    "typecheck": "turbo typecheck",
+    "watch": "turbo watch"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "tsup": "^7.2.0",
+    "turbo": "^1.10.16",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": "^8.0.0"
+  }
+}

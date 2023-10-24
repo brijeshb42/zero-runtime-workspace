@@ -1,0 +1,38 @@
+{
+  "name": "@mui/zero-vite-plugin",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist types",
+    "watch": "tsup --watch --tsconfig tsconfig.build.json",
+    "build": "tsup --tsconfig tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.2",
+    "@linaria/babel-preset": "^4.5.4",
+    "@linaria/logger": "^4.5.0",
+    "@linaria/utils": "^4.5.3",
+    "@mui/zero-runtime": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.20.3",
+    "@types/chai": "^4.3.8",
+    "chai": "^4.3.10",
+    "vite": "^4.4.11"
+  },
+  "peerDependencies": {
+    "vite": "^4.0.0 || ^5.0.0"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ]
+}
