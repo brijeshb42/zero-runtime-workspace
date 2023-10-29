@@ -127,8 +127,7 @@ export default function styled(tag, options = {}) {
         {...toPassProps}
         ref={ref}
         className={finalClassName}
-        // eslint-disable-next-line no-underscore-dangle
-        ownerState={!Component.__isStyled ? undefined : ownerState}
+        ownerState={Component.$$isStyled ? ownerState : undefined}
         style={{
           ...style,
           ...varStyles,
@@ -140,7 +139,7 @@ export default function styled(tag, options = {}) {
   StyledComponent.displayName = `Styled(${componentName})`;
   StyledComponent.defaultProps = defaultProps;
   // eslint-disable-next-line no-underscore-dangle
-  StyledComponent.__isStyled = true;
+  StyledComponent.$$isStyled = true;
 
   return StyledComponent;
 }

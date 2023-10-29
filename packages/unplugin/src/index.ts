@@ -1,4 +1,4 @@
-import * as path from 'node:path';
+// import * as path from 'node:path';
 import {
   UnpluginFactoryOutput,
   WebpackPluginInstance,
@@ -17,19 +17,26 @@ import {
   preprocessor as basePreprocessor,
 } from '@mui/zero-runtime/utils';
 
+type NextMeta = {
+  type: 'next';
+  dev: boolean;
+  isServer: boolean;
+};
+
+type Meta = NextMeta;
+
 export type PluginOptions<Theme = unknown> = {
   theme: Theme;
   cssVariablesPrefix?: string;
-  /**
-   * Whether the css variables for the default theme should target the :root selector or not.
-   * @default true
-   */
   injectDefaultThemeInRoot?: boolean;
   transformLibraries?: string[];
   preprocessor?: Preprocessor;
   debug?: boolean;
   sourceMap?: boolean;
+  meta?: Meta;
   asyncResolve?: (what: string) => string | null;
+  writeCache?: (data: string) => Promise<void>;
+  restoreCache?: () => Promise<string>;
 } & Partial<LinariaPluginOptions>;
 
 const extensions = [
@@ -68,14 +75,19 @@ function isZeroRuntimeProcessableFile(
   );
 }
 
-// Need to make it global because Next.js initializes the plugin
-// multiple times during the build process.
-const cssLookup = new Map<string, string>();
-const cssFileLookup = new Map<string, string>();
+/**
+ * Next.js initializes the plugin multiple times. So all the calls
+ * have to share the same Maps.
+ */
+const globalCssFileLookup = new Map<string, string>();
+const globalCssLookup = new Map<string, string>();
 
 export const plugin = createUnplugin<PluginOptions, true>((options) => {
   const {
     theme,
+    writeCache,
+    restoreCache,
+    meta,
     cssVariablesPrefix = 'mui',
     injectDefaultThemeInRoot = true,
     transformLibraries = [],
@@ -95,6 +107,10 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
   };
   const cache = new TransformCacheCollection();
   const { emitter, onDone } = createPerfMeter(debug);
+  const cssLookup =
+    meta?.type === 'next' ? globalCssLookup : new Map<string, string>();
+  const cssFileLookup =
+    meta?.type === 'next' ? globalCssFileLookup : new Map<string, string>();
 
   return [
     {
@@ -141,19 +157,6 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
       },
     },
     {
-      name: 'zero-plugin-load-output-css',
-      enforce: 'pre',
-      resolveId(importeeUrl: string) {
-        return cssFileLookup.get(importeeUrl);
-      },
-      loadInclude(id) {
-        return id.endsWith('.zero.css');
-      },
-      load(id) {
-        return cssLookup.get(id) ?? '';
-      },
-    },
-    {
       name: 'zero-plugin-transform-linaria',
       enforce: 'post',
       buildEnd() {
@@ -187,33 +190,41 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
           emitter
         );
         let { cssText } = result;
-        if (!cssText) {
-          return null;
+        if (!cssText || (meta?.type === 'next' && !meta.isServer)) {
+          return {
+            code: result.code,
+            map: result.sourceMap,
+          };
         }
 
         const slug = slugify(cssText);
-        // const cssFilename = path
-        //   .normalize(`${id.replace(/\.[jt]sx?$/, '')}_${slug}.zero.css`)
-        //   .replace(/\\/g, path.posix.sep);
-        const cssFilename = `${path.parse(id).name}_${slug}.zero.css`;
-
-        const cssRelativePath = path
-          .relative(process.cwd(), cssFilename)
-          .replace(/\\/g, path.posix.sep);
-
-        const cssId = `./${cssRelativePath}`;
+        const cssFilename = `${slug}.zero.css`;
+        const cssId = `./${cssFilename}`;
 
         if (sourceMap && result.cssSourceMapText) {
           const map = Buffer.from(result.cssSourceMapText).toString('base64');
           cssText += `/*# sourceMappingURL=data:application/json;base64,${map}*/`;
         }
 
-        cssLookup.set(cssFilename, cssText);
         cssFileLookup.set(cssId, cssFilename);
+        cssLookup.set(cssFilename, cssText);
         return {
           code: `import ${JSON.stringify(`./${cssFilename}`)};\n${result.code}`,
           map: result.sourceMap,
         };
+      },
+    },
+    {
+      name: 'zero-plugin-load-output-css',
+      enforce: 'pre',
+      resolveId(importeeUrl: string) {
+        return cssFileLookup.get(importeeUrl);
+      },
+      loadInclude(id) {
+        return id.endsWith('.zero.css');
+      },
+      load(id) {
+        return cssLookup.get(id) ?? '';
       },
     },
   ];

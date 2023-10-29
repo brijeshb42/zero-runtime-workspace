@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build:app": "webpack --mode production",
-    "start": "webpack serve --mode development",
-    "preview": "python3 -m http.server -d dist"
+    "start": "webpack serve --mode development --port 3001",
+    "preview": "python3 -m http.server -d dist 3001"
   },
   "dependencies": {
     "@mui/material": "^5.14.15",

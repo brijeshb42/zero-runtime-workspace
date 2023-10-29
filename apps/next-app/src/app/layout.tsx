@@ -13,7 +13,12 @@ export const metadata: Metadata = {
 };
 
 const Html = styled.html({
-  color: 'blue',
+  color: 'red',
+});
+
+const Body = styled.body({
+  color: 'rgb(var(--foreground-rgb))',
+  background: `linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb))`,
 });
 
 export default function RootLayout({
@@ -23,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <Html lang="en">
-      <body className={inter.className}>{children}</body>
+      <Body className={inter.className}>{children}</Body>
     </Html>
   );
 }

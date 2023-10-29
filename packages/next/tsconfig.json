@@ -11,7 +11,7 @@
   "exclude": ["./tsup.config.ts"],
   "references": [
     {
-      "path": "../runtime"
+      "path": "../unplugin"
     }
   ]
 }

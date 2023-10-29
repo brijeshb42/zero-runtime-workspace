@@ -5,7 +5,8 @@ import { createRoot } from 'react-dom/client';
 import { styled } from '@mui/zero-runtime';
 import { Button, bounceAnim } from 'local-ui-lib';
 
-const LocalButton = styled.button({
+const LocalButton = styled.button<{ isRed?: boolean }>({
+  color: ({ isRed }) => (isRed ? 'primary.main' : 'secondary.main'),
   background: 'transparent',
   borderRadius: 5,
   animation: `${bounceAnim} 1s ease-in infinite`,
@@ -17,20 +18,11 @@ function App() {
   const [count, setCount] = useState(0);
   return (
     <>
-      <LocalButton
-        type="button"
-        sx={{
-          color: 'white',
-          backgroundColor: 'red',
-        }}
-      >
+      <LocalButton type="button" isRed={count % 2 === 0}>
         Local Button
       </LocalButton>
       <Button
         type="button"
-        sx={{
-          color: count % 2 === 0 ? 'red' : 'blue',
-        }}
         onClick={() => {
           setCount(count + 1);
         }}
