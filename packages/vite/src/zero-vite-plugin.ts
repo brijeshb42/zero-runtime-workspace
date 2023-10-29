@@ -7,14 +7,25 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 
-import type { ModuleNode, Plugin, ResolvedConfig, ViteDevServer, FilterPattern } from 'vite';
+import type {
+  ModuleNode,
+  Plugin,
+  ResolvedConfig,
+  ViteDevServer,
+  FilterPattern,
+} from 'vite';
 import { optimizeDeps, createFilter } from 'vite';
 
-import { transform, slugify, TransformCacheCollection } from '@linaria/babel-preset';
+import {
+  transform,
+  slugify,
+  TransformCacheCollection,
+} from '@linaria/babel-preset';
 import type { PluginOptions, Preprocessor } from '@linaria/babel-preset';
 import { createCustomDebug } from '@linaria/logger';
 import type { IPerfMeterOptions } from '@linaria/utils';
 import { createPerfMeter, getFileIdx, syncResolve } from '@linaria/utils';
+import { type PluginCustomOptions } from '@mui/zero-runtime/utils';
 
 export type VitePluginOptions = {
   debug?: IPerfMeterOptions | false | null | undefined;
@@ -23,7 +34,8 @@ export type VitePluginOptions = {
   preprocessor?: Preprocessor;
   sourceMap?: boolean;
   transformLibraries?: string[];
-} & Partial<PluginOptions>;
+} & Partial<PluginOptions> &
+  PluginCustomOptions;
 
 export default function zeroVitePlugin({
   debug,
@@ -57,16 +69,16 @@ export default function zeroVitePlugin({
     configureServer(_server) {
       devServer = _server;
     },
-    load(url: string) {
-      const [id] = url.split('?', 1);
-      return cssLookup[id];
-    },
     resolveId(importeeUrl: string) {
       const [id] = importeeUrl.split('?', 1);
       if (cssLookup[id]) {
         return id;
       }
       return cssFileLookup[id];
+    },
+    load(url: string) {
+      const [id] = url.split('?', 1);
+      return cssLookup[id];
     },
     handleHotUpdate(ctx) {
       // it's module, so just transform it
@@ -80,7 +92,7 @@ export default function zeroVitePlugin({
           // file is dependency of any target
           x.dependencies.some((dep) => dep === ctx.file) ||
           // or changed module is a dependency of any target
-          x.dependencies.some((dep) => ctx.modules.some((m) => m.file === dep)),
+          x.dependencies.some((dep) => ctx.modules.some((m) => m.file === dep))
       );
       const deps = affected.flatMap((target) => target.dependencies);
 
@@ -104,7 +116,9 @@ export default function zeroVitePlugin({
       let shouldReturn = url.includes('node_modules');
 
       if (shouldReturn) {
-        shouldReturn = !transformLibraries.some((libName) => url.includes(libName));
+        shouldReturn = !transformLibraries.some((libName) =>
+          url.includes(libName)
+        );
       }
 
       if (shouldReturn) {
@@ -120,7 +134,11 @@ export default function zeroVitePlugin({
       const log = createCustomDebug('rollup', getFileIdx(id));
       log('Vite transform', id);
 
-      const asyncResolve = async (what: string, importer: string, stack: string[]) => {
+      const asyncResolve = async (
+        what: string,
+        importer: string,
+        stack: string[]
+      ) => {
         const resolved = await this.resolve(what, importer);
         if (resolved) {
           if (resolved.external) {
@@ -162,7 +180,7 @@ export default function zeroVitePlugin({
         asyncResolve,
         {},
         cache,
-        emitter,
+        emitter
       );
 
       let { cssText, dependencies } = result;
@@ -197,7 +215,8 @@ export default function zeroVitePlugin({
 
         if (module) {
           devServer.moduleGraph.invalidateModule(module);
-          module.lastHMRTimestamp = module.lastInvalidationTimestamp || Date.now();
+          module.lastHMRTimestamp =
+            module.lastInvalidationTimestamp || Date.now();
         }
       }
 

@@ -1,4 +1,3 @@
-// import * as path from 'node:path';
 import {
   UnpluginFactoryOutput,
   WebpackPluginInstance,
@@ -23,7 +22,11 @@ type NextMeta = {
   isServer: boolean;
 };
 
-type Meta = NextMeta;
+type ViteMeta = {
+  type: 'vite';
+};
+
+type Meta = NextMeta | ViteMeta;
 
 export type PluginOptions<Theme = unknown> = {
   theme: Theme;

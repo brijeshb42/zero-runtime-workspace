@@ -1,6 +1,5 @@
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import reactPlugin from '@vitejs/plugin-react';
-// import { vite as zeroPlugin } from '@mui/zero-unplugin';
 import { zeroVitePlugin as zeroPlugin } from '@mui/zero-vite-plugin';
 import { createTheme } from '@mui/material/styles';
 
