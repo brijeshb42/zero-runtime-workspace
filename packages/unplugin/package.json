@@ -1,7 +1,6 @@
 {
-  "name": "@mui/zero-vite-plugin",
+  "name": "@mui/zero-unplugin",
   "version": "0.0.1",
-  "private": true,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -16,16 +15,11 @@
     "@linaria/babel-preset": "^4.5.4",
     "@linaria/logger": "^4.5.0",
     "@linaria/utils": "^4.5.3",
-    "@mui/zero-runtime": "0.0.1"
+    "@mui/zero-runtime": "workspace:*",
+    "unplugin": "^1.5.0"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.20.3",
-    "@types/chai": "^4.3.8",
-    "chai": "^4.3.10",
-    "vite": "^4.5.0"
-  },
-  "peerDependencies": {
-    "vite": "^4.0.0 || ^5.0.0"
+    "@types/babel__core": "^7.20.3"
   },
   "sideEffects": false,
   "publishConfig": {

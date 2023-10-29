@@ -9,9 +9,6 @@
       "path": "../../packages/runtime"
     },
     {
-      "path": "../../packages/vite"
-    },
-    {
       "path": "../local-ui-lib"
     }
   ]

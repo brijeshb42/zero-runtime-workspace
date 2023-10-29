@@ -1,0 +1,26 @@
+{
+  "name": "@app/next-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "next dev",
+    "build:app": "next build",
+    "preview": "next start",
+    "clean": "rimraf .next",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mui/zero-runtime": "workspace:*",
+    "react": "^18",
+    "react-dom": "^18",
+    "next": "13.5.6"
+  },
+  "devDependencies": {
+    "@mui/material": "^5.14.15",
+    "@mui/zero-next-plugin": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  }
+}

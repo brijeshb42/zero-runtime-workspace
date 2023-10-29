@@ -32,6 +32,8 @@ const wrapperPlugin = (options: WrapperOptions): Plugin => {
   });
 };
 
+const VIRTUAL_CSS_FILE = `\0zero-runtime-styles.css`;
+
 export function zeroVitePlugin(options: ZeroVitePluginOptions): PluginOption {
   const {
     cssVariablesPrefix = 'mui',
@@ -44,26 +46,31 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions): PluginOption {
   function injectMUITokensPlugin(): PluginOption {
     return {
       name: 'vite-mui-theme-injection-plugin',
-      load(id) {
-        const isZeroRuntimStyles = id.endsWith('zero-runtime/styles.css');
-        if (isZeroRuntimStyles) {
-          return {
-            code: generateCss(
-              {
-                cssVariablesPrefix,
-                themeArgs: {
-                  theme,
-                },
-              },
-              {
-                defaultThemeKey: 'theme',
-                injectInRoot: injectDefaultThemeInRoot,
-              }
-            ),
-            map: null,
-          };
+      resolveId(source) {
+        if (source === '@mui/zero-runtime/styles.css') {
+          return VIRTUAL_CSS_FILE;
         }
         return null;
+      },
+      load(id) {
+        if (id !== VIRTUAL_CSS_FILE) {
+          return null;
+        }
+        return {
+          code: generateCss(
+            {
+              cssVariablesPrefix,
+              themeArgs: {
+                theme,
+              },
+            },
+            {
+              defaultThemeKey: 'theme',
+              injectInRoot: injectDefaultThemeInRoot,
+            }
+          ),
+          map: null,
+        };
       },
     };
   }
@@ -112,7 +119,10 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions): PluginOption {
     },
     babelOptions: {
       ...babelOptions,
-      plugins: ['@babel/plugin-syntax-jsx'],
+      plugins: [
+        '@babel/plugin-syntax-typescript',
+        ...(babelOptions.plugins ?? []),
+      ],
     },
     ...rest,
   });

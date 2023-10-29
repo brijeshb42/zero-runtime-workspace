@@ -12,6 +12,7 @@
     "clean": "turbo clean",
     "preview": "turbo preview",
     "start": "turbo start",
+    "start:next": "turbo --scope=@app/next-app start",
     "typecheck": "turbo typecheck",
     "watch": "turbo watch"
   },

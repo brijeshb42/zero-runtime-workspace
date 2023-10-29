@@ -1,6 +1,7 @@
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import reactPlugin from '@vitejs/plugin-react';
-import { zeroVitePlugin } from '@mui/zero-vite-plugin';
+// import { vite as zeroPlugin } from '@mui/zero-unplugin';
+import { zeroVitePlugin as zeroPlugin } from '@mui/zero-vite-plugin';
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme();
@@ -14,7 +15,7 @@ theme.applyDarkStyles = function applyDarkStyles(obj) {
 
 export default defineConfig({
   plugins: [
-    zeroVitePlugin({
+    zeroPlugin({
       cssVariablesPrefix: 'app',
       theme,
       transformLibraries: ['local-library'],

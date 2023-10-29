@@ -1,0 +1,29 @@
+{
+  "name": "@app/wp-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build:app": "webpack --mode production",
+    "start": "webpack serve --mode development",
+    "preview": "python3 -m http.server -d dist"
+  },
+  "dependencies": {
+    "@mui/material": "^5.14.15",
+    "@mui/zero-runtime": "workspace:*",
+    "local-ui-lib": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@mui/zero-unplugin": "workspace:*",
+    "@types/react": "^18.2.33",
+    "@types/react-dom": "^18.2.14",
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.3",
+    "mini-css-extract-plugin": "^2.7.6",
+    "ts-loader": "^9.5.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
