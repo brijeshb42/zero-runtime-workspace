@@ -6,7 +6,7 @@
       "outputs": ["dist/**", "esm/**", "lib/**", "types/**"]
     },
     "build:app": {
-      "dependsOn": ["build", "types"],
+      "dependsOn": ["^build", "types"],
       "outputs": ["dist/**", ".next/**"]
     },
     "clean": {

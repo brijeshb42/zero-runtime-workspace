@@ -20,13 +20,18 @@ type NextMeta = {
   type: 'next';
   dev: boolean;
   isServer: boolean;
+  outputCss: boolean;
 };
 
 type ViteMeta = {
   type: 'vite';
 };
 
-type Meta = NextMeta | ViteMeta;
+type WebpackMeta = {
+  type: 'webpack';
+};
+
+type Meta = NextMeta | ViteMeta | WebpackMeta;
 
 export type PluginOptions<Theme = unknown> = {
   theme: Theme;
@@ -117,9 +122,9 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
 
   return [
     {
-      name: 'zero-plugin-styles-css',
+      name: 'zero-plugin-theme-tokens',
       enforce: 'pre',
-      resolveId(source) {
+      resolveId(source: string) {
         if (source === '@mui/zero-runtime/styles.css') {
           return VIRTUAL_CSS_FILE;
         }
@@ -128,7 +133,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
       loadInclude(id) {
         return isZeroRuntimeThemeFile(id);
       },
-      load() {
+      load(id) {
         return generateCss(
           { themeArgs, cssVariablesPrefix },
           {
@@ -193,7 +198,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
           emitter
         );
         let { cssText } = result;
-        if (!cssText || (meta?.type === 'next' && !meta.isServer)) {
+        if (!cssText || (meta?.type === 'next' && !meta.outputCss)) {
           return {
             code: result.code,
             map: result.sourceMap,
@@ -220,8 +225,8 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
     {
       name: 'zero-plugin-load-output-css',
       enforce: 'pre',
-      resolveId(importeeUrl: string) {
-        return cssFileLookup.get(importeeUrl);
+      resolveId(source: string) {
+        return cssFileLookup.get(source);
       },
       loadInclude(id) {
         return id.endsWith('.zero.css');

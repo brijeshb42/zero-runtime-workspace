@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { findPagesDir } from 'next/dist/lib/find-pages-dir';
 import {
   webpack as zeroWebpackPlugin,
   PluginOptions as ZeroPluginConfig,
@@ -15,7 +16,23 @@ export function withZeroPlugin(
     config,
     context
   ) => {
-    const { dev, isServer } = context;
+    const { dir, dev, isServer, config: resolvedNextConfig } = context;
+
+    const findPagesDirResult = findPagesDir(
+      dir,
+      // @ts-expect-error next.js v12 accepts 2 arguments, while v13 only accepts 1
+      resolvedNextConfig.experimental?.appDir ?? false
+    );
+
+    let hasAppDir = false;
+
+    if ('appDir' in resolvedNextConfig.experimental) {
+      hasAppDir =
+        !!resolvedNextConfig.experimental.appDir &&
+        !!(findPagesDirResult && findPagesDirResult.appDir);
+    } else {
+      hasAppDir = !!(findPagesDirResult && findPagesDirResult.appDir);
+    }
 
     config.plugins.push(
       zeroWebpackPlugin({
@@ -24,6 +41,7 @@ export function withZeroPlugin(
           type: 'next',
           dev,
           isServer,
+          outputCss: dev || hasAppDir || !isServer,
         },
         asyncResolve(what) {
           if (what === 'next/image') {
