@@ -4,7 +4,7 @@ import { serialize, compile, stringify, middleware } from 'stylis';
 function globalSelector(element: Element) {
   switch (element.type) {
     case 'rule':
-      element.props = (element.props as string[]).map((value: any) => {
+      element.props = (element.props as string[]).map((value) => {
         if (value.match(/(:where|:is)\(/)) {
           value = value.replace(/\.[^:]+(:where|:is)/, '$1');
           return value;

@@ -9,7 +9,9 @@ interface KeyframesObject {
   };
 }
 
-type KeyframesArg = ((themeArgs: ThemeArgs) => KeyframesObject) | KeyframesObject;
+type KeyframesArg =
+  | ((themeArgs: ThemeArgs) => KeyframesObject)
+  | KeyframesObject;
 
 interface Keyframes {
   /**

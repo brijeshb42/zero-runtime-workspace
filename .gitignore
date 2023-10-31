@@ -4,3 +4,4 @@ dist/
 types/
 .DS_Store
 .turbo
+.eslintcache

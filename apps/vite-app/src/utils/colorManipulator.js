@@ -8,7 +8,9 @@
 function clamp(value, min = 0, max = 1) {
   if (process.env.NODE_ENV !== 'production') {
     if (value < min || value > max) {
-      console.error(`MUI: The value provided ${value} is out of range [${min}, ${max}].`);
+      console.error(
+        `MUI: The value provided ${value} is out of range [${min}, ${max}].`,
+      );
     }
   }
 
@@ -33,7 +35,9 @@ export function hexToRgb(color) {
   return colors
     ? `rgb${colors.length === 4 ? 'a' : ''}(${colors
         .map((n, index) => {
-          return index < 3 ? parseInt(n, 16) : Math.round((parseInt(n, 16) / 255) * 1000) / 1000;
+          return index < 3
+            ? parseInt(n, 16)
+            : Math.round((parseInt(n, 16) / 255) * 1000) / 1000;
         })
         .join(', ')})`
     : '';
@@ -81,7 +85,11 @@ export function decomposeColor(color) {
     if (values.length === 4 && values[3].charAt(0) === '/') {
       values[3] = values[3].slice(1);
     }
-    if (['srgb', 'display-p3', 'a98-rgb', 'prophoto-rgb', 'rec-2020'].indexOf(colorSpace) === -1) {
+    if (
+      ['srgb', 'display-p3', 'a98-rgb', 'prophoto-rgb', 'rec-2020'].indexOf(
+        colorSpace,
+      ) === -1
+    ) {
       throw new Error(
         'MUI: unsupported `%s` color space.\n' +
           'The following color spaces are supported: srgb, display-p3, a98-rgb, prophoto-rgb, rec-2020.',
@@ -106,10 +114,12 @@ export const colorChannel = (color) => {
   const decomposedColor = decomposeColor(color);
   return decomposedColor.values
     .slice(0, 3)
-    .map((val, idx) => (decomposedColor.type.indexOf('hsl') !== -1 && idx !== 0 ? `${val}%` : val))
+    .map((val, idx) =>
+      decomposedColor.type.indexOf('hsl') !== -1 && idx !== 0 ? `${val}%` : val,
+    )
     .join(' ');
 };
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export const private_safeColorChannel = (color, warning) => {
   try {
     return colorChannel(color);
@@ -160,7 +170,9 @@ export function rgbToHex(color) {
   }
 
   const { values } = decomposeColor(color);
-  return `#${values.map((n, i) => intToHex(i === 3 ? Math.round(255 * n) : n)).join('')}`;
+  return `#${values
+    .map((n, i) => intToHex(i === 3 ? Math.round(255 * n) : n))
+    .join('')}`;
 }
 
 /**
@@ -175,10 +187,15 @@ export function hslToRgb(color) {
   const s = values[1] / 100;
   const l = values[2] / 100;
   const a = s * Math.min(l, 1 - l);
-  const f = (n, k = (n + h / 30) % 12) => l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+  const f = (n, k = (n + h / 30) % 12) =>
+    l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
 
   let type = 'rgb';
-  const rgb = [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
+  const rgb = [
+    Math.round(f(0) * 255),
+    Math.round(f(8) * 255),
+    Math.round(f(4) * 255),
+  ];
 
   if (color.type === 'hsla') {
     type += 'a';
@@ -210,7 +227,9 @@ export function getLuminance(color) {
   });
 
   // Truncate at 3 digits
-  return Number((0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]).toFixed(3));
+  return Number(
+    (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]).toFixed(3),
+  );
 }
 
 /**
@@ -249,7 +268,7 @@ export function alpha(color, value) {
 
   return recomposeColor(color);
 }
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function private_safeAlpha(color, value, warning) {
   try {
     return alpha(color, value);
@@ -273,14 +292,17 @@ export function darken(color, coefficient) {
 
   if (color.type.indexOf('hsl') !== -1) {
     color.values[2] *= 1 - coefficient;
-  } else if (color.type.indexOf('rgb') !== -1 || color.type.indexOf('color') !== -1) {
+  } else if (
+    color.type.indexOf('rgb') !== -1 ||
+    color.type.indexOf('color') !== -1
+  ) {
     for (let i = 0; i < 3; i += 1) {
       color.values[i] *= 1 - coefficient;
     }
   }
   return recomposeColor(color);
 }
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function private_safeDarken(color, coefficient, warning) {
   try {
     return darken(color, coefficient);
@@ -316,7 +338,7 @@ export function lighten(color, coefficient) {
 
   return recomposeColor(color);
 }
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function private_safeLighten(color, coefficient, warning) {
   try {
     return lighten(color, coefficient);
@@ -336,9 +358,11 @@ export function private_safeLighten(color, coefficient, warning) {
  * @returns {string} A CSS color string. Hex input values are returned as rgb
  */
 export function emphasize(color, coefficient = 0.15) {
-  return getLuminance(color) > 0.5 ? darken(color, coefficient) : lighten(color, coefficient);
+  return getLuminance(color) > 0.5
+    ? darken(color, coefficient)
+    : lighten(color, coefficient);
 }
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function private_safeEmphasize(color, coefficient, warning) {
   try {
     return private_safeEmphasize(color, coefficient);

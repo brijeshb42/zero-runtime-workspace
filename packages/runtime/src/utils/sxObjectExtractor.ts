@@ -23,7 +23,9 @@ function validateObjectKey(
     return;
   }
   if (!parentCall) {
-    throw keyPath.buildCodeFrameError('Expressions in css object keys are not supported.');
+    throw keyPath.buildCodeFrameError(
+      'Expressions in css object keys are not supported.',
+    );
   }
   if (
     !identifiers.every((item) => {
@@ -68,7 +70,10 @@ function traverseObjectExpression(
         throw value.buildCodeFrameError(
           'Arrow functions are not supported as values of sx object.',
         );
-      } else if (!value.isLiteral() && !isStaticObjectOrArrayExpression(value)) {
+      } else if (
+        !value.isLiteral() &&
+        !isStaticObjectOrArrayExpression(value)
+      ) {
         const identifiers = findIdentifiers([value], 'referenced');
         const themeIdentifiers: NodePath<Identifier>[] = [];
         const localIdentifiers: NodePath<Identifier>[] = [];
@@ -114,14 +119,18 @@ function traverseObjectExpression(
         );
       }
     } else if (property.isObjectMethod()) {
-      throw property.buildCodeFrameError('sx prop object does not support ObjectMethods.');
+      throw property.buildCodeFrameError(
+        'sx prop object does not support ObjectMethods.',
+      );
     } else {
       throw property.buildCodeFrameError('Unknown property in object.');
     }
   });
 }
 
-export function sxObjectExtractor(nodePath: NodePath<ObjectExpression | ArrowFunctionExpression>) {
+export function sxObjectExtractor(
+  nodePath: NodePath<ObjectExpression | ArrowFunctionExpression>,
+) {
   if (nodePath.isObjectExpression()) {
     traverseObjectExpression(nodePath);
   } else if (nodePath.isArrowFunctionExpression()) {

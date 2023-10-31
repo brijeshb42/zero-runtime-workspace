@@ -60,7 +60,7 @@ const cssFunctionTransformerPlugin = declare<BabelPluginOptions>(
                 const binding = path.scope.getBinding(name);
                 if (name === 'theme' && !binding) {
                   throw new Error(
-                    'You cannot use `theme` or other arguments inside runtime functions. Please use token shorthands (like `primary.main` for `theme.palette.primary.main`) if you want to access theme values.'
+                    'You cannot use `theme` or other arguments inside runtime functions. Please use token shorthands (like `primary.main` for `theme.palette.primary.main`) if you want to access theme values.',
                   );
                 }
               },
@@ -85,19 +85,19 @@ const cssFunctionTransformerPlugin = declare<BabelPluginOptions>(
               : undefined);
           if (!themeValue) {
             console.warn(
-              `MUI: Value for key: ${val} does not exist in "theme.${propertyThemeKey}" or "theme.vars.${propertyThemeKey}"`
+              `MUI: Value for key: ${val} does not exist in "theme.${propertyThemeKey}" or "theme.vars.${propertyThemeKey}"`,
             );
           }
           const themeKeyArr = val.split('.').join('-');
           path.replaceWith(
             t.stringLiteral(
-              `var(--${finalPrefix}${propertyThemeKey}-${themeKeyArr})`
-            )
+              `var(--${finalPrefix}${propertyThemeKey}-${themeKeyArr})`,
+            ),
           );
         },
       },
     };
-  }
+  },
 );
 
 export { cssFunctionTransformerPlugin };

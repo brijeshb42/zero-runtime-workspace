@@ -1,3 +1,4 @@
+/* eslint-env node */
 const { withZeroPlugin } = require('@mui/zero-next-plugin');
 const { createTheme } = require('@mui/material/styles');
 

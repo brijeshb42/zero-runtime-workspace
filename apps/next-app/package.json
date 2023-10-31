@@ -6,14 +6,13 @@
     "start": "next dev",
     "build:app": "next build",
     "preview": "next start",
-    "clean": "rimraf .next",
-    "lint": "next lint"
+    "clean": "rimraf .next"
   },
   "dependencies": {
     "@mui/zero-runtime": "workspace:^",
     "react": "^18",
     "react-dom": "^18",
-    "next": "13.5.6"
+    "next": "14.0.1"
   },
   "devDependencies": {
     "@mui/material": "^5.14.16",
@@ -21,6 +20,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8.52.0",
     "typescript": "^5"
   }
 }

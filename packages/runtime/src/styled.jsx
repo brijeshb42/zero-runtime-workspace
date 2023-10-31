@@ -10,7 +10,7 @@ function getVariantClasses(componentProps, variants) {
           ownerState[propKey] === propValue ||
           componentProps[propKey] === propValue
         );
-      })
+      }),
     )
     .map(({ className }) => className);
   return variantClasses;
@@ -72,11 +72,9 @@ export default function styled(tag, options = {}) {
   }
 
   const StyledComponent = React.forwardRef(function StyledComponent(
-    // eslint-disable-next-line react/prop-types
     { as, className, sx, style, ...props },
-    ref
+    ref,
   ) {
-    // eslint-disable-next-line react/prop-types
     const { ownerState, ...restProps } = props;
     const Component = as ?? tag;
     const varStyles = Object.entries(cssVars).reduce(
@@ -92,11 +90,9 @@ export default function styled(tag, options = {}) {
         }
         return acc;
       },
-      {}
+      {},
     );
-    // eslint-disable-next-line react/prop-types
     const sxClass = typeof sx === 'string' ? sx : sx?.className;
-    // eslint-disable-next-line react/prop-types
     const sxVars = sx && typeof sx !== 'string' ? sx.vars : undefined;
 
     if (sxVars) {
@@ -113,7 +109,7 @@ export default function styled(tag, options = {}) {
       classes,
       sxClass,
       className,
-      getVariantClasses(props, variants)
+      getVariantClasses(props, variants),
     );
     const toPassProps = Object.keys(restProps)
       .filter((item) => shouldForwardProp(item))

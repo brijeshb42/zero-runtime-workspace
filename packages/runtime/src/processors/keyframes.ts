@@ -27,7 +27,7 @@ export class KeyframesProcessor extends BaseProcessor {
     validateParams(
       params,
       ['callee', ['call', 'template']],
-      `Invalid use of ${this.tagSource.imported} tag.`
+      `Invalid use of ${this.tagSource.imported} tag.`,
     );
 
     const [, callParams] = params;
@@ -65,7 +65,7 @@ export class KeyframesProcessor extends BaseProcessor {
         switch (item.kind) {
           case ValueType.FUNCTION:
             throw item.buildCodeFrameError(
-              'Functions are not allowed to be interpolated in keyframes tag.'
+              'Functions are not allowed to be interpolated in keyframes tag.',
             );
           case ValueType.CONST:
             templateExpressions.push(item.value);
@@ -74,7 +74,7 @@ export class KeyframesProcessor extends BaseProcessor {
             const evaluatedValue = values.get(item.ex.name);
             if (typeof evaluatedValue === 'function') {
               throw item.buildCodeFrameError(
-                'Functions are not allowed to be interpolated in keyframes tag.'
+                'Functions are not allowed to be interpolated in keyframes tag.',
               );
             } else {
               templateExpressions.push(evaluatedValue as Primitive);
@@ -133,8 +133,10 @@ export class KeyframesProcessor extends BaseProcessor {
       styleObj = values.get(callArg.ex.name) as CSSInterpolation;
     } else if (callArg.kind === ValueType.FUNCTION) {
       const { themeArgs } = this.options as IOptions;
-      const value = values.get(callArg.ex.name) as Function;
-      styleObj = value(themeArgs) as CSSInterpolation;
+      const value = values.get(callArg.ex.name) as (
+        args: Record<string, unknown> | undefined,
+      ) => CSSInterpolation;
+      styleObj = value(themeArgs);
     }
     if (styleObj) {
       this.generateArtifacts(styleObj);
