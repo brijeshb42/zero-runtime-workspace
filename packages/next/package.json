@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@mui/zero-unplugin": "workspace:*",
+    "@mui/zero-unplugin": "workspace:^",
     "mkdirp": "^3.0.1"
   },
   "devDependencies": {

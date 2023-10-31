@@ -15,7 +15,7 @@
     "@linaria/babel-preset": "^4.5.4",
     "@linaria/logger": "^4.5.0",
     "@linaria/utils": "^4.5.3",
-    "@mui/zero-runtime": "workspace:*",
+    "@mui/zero-runtime": "workspace:^",
     "unplugin": "^1.5.0"
   },
   "devDependencies": {
