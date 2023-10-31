@@ -1,4 +1,5 @@
+prefer-workspace-packages: true
 packages:
-  - 'packages/**'
-  - 'apps/**'
+  - 'packages/*'
+  - 'apps/*'
   - '!apps/next-app/.next/types'

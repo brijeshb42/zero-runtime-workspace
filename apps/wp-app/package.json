@@ -8,7 +8,7 @@
     "preview": "python3 -m http.server -d dist 3001"
   },
   "dependencies": {
-    "@mui/material": "^5.14.15",
+    "@mui/material": "^5.14.16",
     "@mui/zero-runtime": "workspace:*",
     "local-ui-lib": "workspace:*",
     "react": "^18.2.0",
