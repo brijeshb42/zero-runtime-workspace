@@ -2,14 +2,11 @@
   "name": "zero-runtime",
   "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "./packages/*",
-    "./website"
-  ],
   "scripts": {
     "build": "turbo build",
     "build:app": "turbo build:app",
     "clean": "turbo clean",
+    "prepare": "pnpm build",
     "preview": "turbo preview",
     "start": "turbo start",
     "start:next": "turbo --scope=@app/next-app start",

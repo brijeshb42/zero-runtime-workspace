@@ -27,6 +27,8 @@
   },
   "files": [
     "dist",
+    "next-font.js",
+    "next-image.js",
     "package.json"
   ]
 }
