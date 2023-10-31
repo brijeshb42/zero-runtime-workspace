@@ -109,7 +109,7 @@ export class SxProcessor extends BaseProcessor {
                 t.arrayExpression([
                   expression.body as Expression,
                   t.booleanLiteral(isUnitLess),
-                ])
+                ]),
               );
             }
             case 'FunctionExpression': {
@@ -123,17 +123,17 @@ export class SxProcessor extends BaseProcessor {
                   t.arrayExpression([
                     returnStatement.argument,
                     t.booleanLiteral(isUnitLess),
-                  ])
+                  ]),
                 );
               }
               throw this.sxArguments[0].buildCodeFrameError(
-                'Invalid transformation encountered. The callbacks in sx properties should directly return an Expression.'
+                'Invalid transformation encountered. The callbacks in sx properties should directly return an Expression.',
               );
             }
             default: {
               return t.objectProperty(
                 t.stringLiteral(variableId),
-                t.nullLiteral()
+                t.nullLiteral(),
               );
             }
           }
@@ -142,11 +142,11 @@ export class SxProcessor extends BaseProcessor {
       const obj = t.objectExpression([
         t.objectProperty(
           t.identifier('className'),
-          t.stringLiteral(this.className)
+          t.stringLiteral(this.className),
         ),
         t.objectProperty(
           t.identifier('vars'),
-          t.objectExpression(varProperties)
+          t.objectExpression(varProperties),
         ),
       ]);
       this.replacer(obj, false);
@@ -167,7 +167,7 @@ export class SxProcessor extends BaseProcessor {
   protected getCustomVariableId(
     cssKey: string,
     source: string,
-    hasUnit: boolean
+    hasUnit: boolean,
   ) {
     const context = this.getVariableContext(cssKey, source, hasUnit);
     const customSlugFn = this.options.variableNameSlug;
@@ -184,10 +184,9 @@ export class SxProcessor extends BaseProcessor {
   protected getVariableContext(
     cssKey: string,
     source: string,
-    hasUnit: boolean
+    hasUnit: boolean,
   ): IVariableContext {
     const getIndex = () => {
-      // eslint-disable-next-line no-plusplus
       return this.variableIdx++;
     };
 

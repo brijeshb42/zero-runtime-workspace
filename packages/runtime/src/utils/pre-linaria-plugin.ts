@@ -43,7 +43,7 @@ export const babelPlugin = declare((api) => {
           t.callExpression(sxIdentifier, [
             expressionPath.node,
             t.identifier(tagName.node.name),
-          ])
+          ]),
         );
       },
       ObjectProperty(path) {
@@ -72,7 +72,7 @@ export const babelPlugin = declare((api) => {
         sxObjectExtractor(valuePath);
         const sxIdentifier = addNamed(keyPath, 'sx', '@mui/zero-runtime');
         valuePath.replaceWith(
-          t.callExpression(sxIdentifier, [valuePath.node, jsxElement.node])
+          t.callExpression(sxIdentifier, [valuePath.node, jsxElement.node]),
         );
       },
     },

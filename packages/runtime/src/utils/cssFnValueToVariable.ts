@@ -7,7 +7,7 @@ import { isUnitLess } from './isUnitLess';
 import { cssFunctionTransformerPlugin } from './cssFunctionTransformerPlugin';
 
 interface StyleObj {
-  [key: string]: string | number | Function | StyleObj;
+  [key: string]: string | number | (() => void) | StyleObj;
 }
 
 export type PluginCustomOptions = {
@@ -33,7 +33,7 @@ function transformThemeKeysInFn(
   styleKey: string,
   functionString: string,
   options: PluginCustomOptions,
-  filename?: string
+  filename?: string,
 ) {
   const { themeArgs: { theme } = {} } = options;
 
@@ -77,7 +77,7 @@ function iterateAndReplaceFunctions(
   getVariableName: (cssKey: string, source: string, hasUnit: boolean) => string,
   options: PluginCustomOptions,
   acc: [string, Node, boolean][],
-  filename?: string
+  filename?: string,
 ) {
   const css = styleObj as StyleObj;
   Object.keys(css).forEach((key) => {
@@ -91,7 +91,7 @@ function iterateAndReplaceFunctions(
           getVariableName,
           options,
           acc,
-          filename
+          filename,
         );
       }
       return;
@@ -107,7 +107,7 @@ function iterateAndReplaceFunctions(
         key,
         fnString,
         options,
-        filename
+        filename,
       );
       const unitLess = isUnitLess(key);
       const variableId = getVariableName(key, fnString, unitLess);
@@ -115,7 +115,7 @@ function iterateAndReplaceFunctions(
       css[key] = `var(--${variableId})`;
     } catch (ex) {
       const err = expressionValue?.buildCodeFrameError(
-        (ex as Error).message || 'Could not parse function expression.'
+        (ex as Error).message || 'Could not parse function expression.',
       ) as Error;
       if (!err) {
         throw ex;
@@ -145,7 +145,7 @@ export function cssFnValueToVariable({
     getVariableName,
     options,
     acc,
-    filename ?? undefined
+    filename ?? undefined,
   );
   return acc;
 }

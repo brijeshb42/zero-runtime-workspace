@@ -92,11 +92,10 @@ export default function zeroVitePlugin({
           // file is dependency of any target
           x.dependencies.some((dep) => dep === ctx.file) ||
           // or changed module is a dependency of any target
-          x.dependencies.some((dep) => ctx.modules.some((m) => m.file === dep))
+          x.dependencies.some((dep) => ctx.modules.some((m) => m.file === dep)),
       );
       const deps = affected.flatMap((target) => target.dependencies);
 
-      // eslint-disable-next-line no-restricted-syntax
       for (const depId of deps) {
         cache.invalidateForFile(depId);
       }
@@ -117,7 +116,7 @@ export default function zeroVitePlugin({
 
       if (shouldReturn) {
         shouldReturn = !transformLibraries.some((libName) =>
-          url.includes(libName)
+          url.includes(libName),
         );
       }
 
@@ -137,7 +136,7 @@ export default function zeroVitePlugin({
       const asyncResolve = async (
         what: string,
         importer: string,
-        stack: string[]
+        stack: string[],
       ) => {
         const resolved = await this.resolve(what, importer);
         if (resolved) {
@@ -180,7 +179,7 @@ export default function zeroVitePlugin({
         asyncResolve,
         {},
         cache,
-        emitter
+        emitter,
       );
 
       let { cssText, dependencies } = result;
@@ -221,7 +220,6 @@ export default function zeroVitePlugin({
       }
 
       for (let i = 0, end = dependencies.length; i < end; i += 1) {
-        // eslint-disable-next-line no-await-in-loop
         const depModule = await this.resolve(dependencies[i], url, {
           isEntry: false,
         });

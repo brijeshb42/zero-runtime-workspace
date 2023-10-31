@@ -41,7 +41,7 @@ function hasCorectExtension(fileName: string) {
 
 function isZeroRuntimeProcessableFile(
   fileName: string,
-  transformLibraries: string[]
+  transformLibraries: string[],
 ) {
   const isNodeModule = fileName.includes('node_modules');
   const isTransformableFile =
@@ -69,7 +69,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
     return {
       name: 'vite-mui-theme-injection-plugin',
       enforce: 'pre',
-      resolveId(source, importer, opt) {
+      resolveId(source) {
         if (source === '@mui/zero-runtime/styles.css') {
           return VIRTUAL_CSS_FILE;
         }
@@ -89,7 +89,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
           {
             defaultThemeKey: 'theme',
             injectInRoot: injectDefaultThemeInRoot,
-          }
+          },
         );
       },
     };
@@ -127,6 +127,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
     themeArgs: {
       theme,
     },
+    preprocessor,
     babelOptions: {
       ...babelOptions,
       plugins: [

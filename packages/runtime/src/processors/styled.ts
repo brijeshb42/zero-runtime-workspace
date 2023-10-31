@@ -129,7 +129,7 @@ export class StyledProcessor extends BaseProcessor {
     validateParams(
       params,
       ['callee', ['call', 'member'], ['call', 'template']],
-      `Invalid use of ${this.tagSource.imported} tag.`
+      `Invalid use of ${this.tagSource.imported} tag.`,
     );
     const [call, memberOrCall, styleCall] = params;
     const [callType, componentArg, componentMetaArg] = memberOrCall;
@@ -257,7 +257,7 @@ export class StyledProcessor extends BaseProcessor {
           },
         ];
         return [rules, replacements];
-      }
+      },
     );
     artifacts.forEach((artifact) => {
       // linaria accesses artifacts array to get the final
@@ -299,7 +299,7 @@ export class StyledProcessor extends BaseProcessor {
     } else if (this.component?.node) {
       componentName = t.callExpression(
         t.identifier(this.component.node.name),
-        []
+        [],
       );
     } else {
       componentName = t.nullLiteral();
@@ -310,13 +310,13 @@ export class StyledProcessor extends BaseProcessor {
 
     if (this.baseClasses.length) {
       const classNames = Array.from(
-        new Set([this.className, ...this.baseClasses])
+        new Set([this.className, ...this.baseClasses]),
       );
       argProperties.push(
         t.objectProperty(
           t.identifier('classes'),
-          t.arrayExpression(classNames.map((cls) => t.stringLiteral(cls)))
-        )
+          t.arrayExpression(classNames.map((cls) => t.stringLiteral(cls))),
+        ),
       );
     }
 
@@ -324,23 +324,23 @@ export class StyledProcessor extends BaseProcessor {
       this.collectedVariables.map(([variableId, expression, isUnitLess]) =>
         t.objectProperty(
           t.stringLiteral(variableId),
-          t.arrayExpression([expression, t.booleanLiteral(isUnitLess)])
-        )
+          t.arrayExpression([expression, t.booleanLiteral(isUnitLess)]),
+        ),
       );
     if (varProperties.length) {
       argProperties.push(
         t.objectProperty(
           t.identifier('vars'),
-          t.objectExpression(varProperties)
-        )
+          t.objectExpression(varProperties),
+        ),
       );
     }
     if (this.collectedVariants.length) {
       argProperties.push(
         t.objectProperty(
           t.identifier('variants'),
-          valueToLiteral(this.collectedVariants)
-        )
+          valueToLiteral(this.collectedVariants),
+        ),
       );
     }
 
@@ -354,8 +354,8 @@ export class StyledProcessor extends BaseProcessor {
       argProperties.push(
         t.objectProperty(
           t.identifier('defaultProps'),
-          valueToLiteral(this.defaultProps)
-        )
+          valueToLiteral(this.defaultProps),
+        ),
       );
     }
     this.replacer(
@@ -363,7 +363,7 @@ export class StyledProcessor extends BaseProcessor {
         componentName,
         t.objectExpression(argProperties),
       ]),
-      true
+      true,
     );
   }
 
@@ -373,7 +373,7 @@ export class StyledProcessor extends BaseProcessor {
   processStyle(
     values: ValueCache,
     styleArg: ExpressionValue,
-    variantsAccumulator?: VariantData[]
+    variantsAccumulator?: VariantData[],
   ) {
     if (styleArg.kind === ValueType.CONST) {
       if (typeof styleArg.value === 'string') {
@@ -386,9 +386,9 @@ export class StyledProcessor extends BaseProcessor {
     } else {
       const styleObjOrFn = values.get(styleArg.ex.name);
       const finalStyle = this.processCss(
-        styleObjOrFn as object | Function,
+        styleObjOrFn as object | (() => void),
         styleArg,
-        variantsAccumulator
+        variantsAccumulator,
       );
       const className = this.getClassName();
       this.baseClasses.push(className);
@@ -425,7 +425,7 @@ export class StyledProcessor extends BaseProcessor {
           const finalStyle = this.processCss(
             overrideStyle,
             null,
-            variantsAccumulator
+            variantsAccumulator,
           );
           const className = this.getClassName();
           this.collectedOverrides.push([key, className]);
@@ -439,7 +439,7 @@ export class StyledProcessor extends BaseProcessor {
     }
     if ('variants' in componentData && componentData.variants) {
       variantsAccumulator.push(
-        ...(componentData.variants as unknown as VariantData[])
+        ...(componentData.variants as unknown as VariantData[]),
       );
     }
     if ('defaultProps' in componentData && componentData.defaultProps) {
@@ -463,9 +463,9 @@ export class StyledProcessor extends BaseProcessor {
   }
 
   processCss(
-    styleObjOrFn: Function | object,
+    styleObjOrFn: ((args: Record<string, unknown>) => void) | object,
     styleArg: ExpressionValue | null,
-    variantsAccumulator?: VariantData[]
+    variantsAccumulator?: VariantData[],
   ) {
     const { themeArgs = {} } = this.options as IOptions;
     const styleObj =

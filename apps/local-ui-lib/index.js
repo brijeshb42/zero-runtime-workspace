@@ -19,7 +19,7 @@ export const Button = styled('button', {
   name: 'MuiButton',
   slot: 'Root',
 })(
-  ({ theme }) => ({
+  () => ({
     fontFamily: 'sans-serif',
   }),
   {
@@ -27,5 +27,5 @@ export const Button = styled('button', {
     color: (props) => (props.isRed ? 'primary.main' : 'secondary.main'),
     '--css-variable': (props) =>
       props.isRed ? 'palette.primary.main' : 'palette.secondary.main',
-  }
+  },
 );

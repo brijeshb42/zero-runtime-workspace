@@ -5,7 +5,8 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme();
 // @TODO - Make this part of the main package
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 theme.applyDarkStyles = function applyDarkStyles(obj) {
   return {
     ':where([data-mui-color-scheme="dark"]) &': obj,

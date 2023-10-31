@@ -9,7 +9,11 @@ export default abstract class BaseProcessor extends LinariaBaseProcessor {
   variableIdx = 0;
 
   // Implementation taken from Linaria - https://github.com/callstack/linaria/blob/master/packages/react/src/processors/styled.ts#L284
-  protected getCustomVariableId(cssKey: string, source: string, hasUnit: boolean) {
+  protected getCustomVariableId(
+    cssKey: string,
+    source: string,
+    hasUnit: boolean,
+  ) {
     const context = this.getVariableContext(cssKey, source, hasUnit);
     const customSlugFn = this.options.variableNameSlug;
     if (!customSlugFn) {
@@ -22,9 +26,12 @@ export default abstract class BaseProcessor extends LinariaBaseProcessor {
   }
 
   // Implementation taken from Linaria - https://github.com/callstack/linaria/blob/master/packages/react/src/processors/styled.ts#L362
-  protected getVariableContext(cssKey: string, source: string, hasUnit: boolean): IVariableContext {
+  protected getVariableContext(
+    cssKey: string,
+    source: string,
+    hasUnit: boolean,
+  ): IVariableContext {
     const getIndex = () => {
-      // eslint-disable-next-line no-plusplus
       return this.variableIdx++;
     };
 

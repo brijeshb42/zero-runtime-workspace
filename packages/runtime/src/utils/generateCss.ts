@@ -33,7 +33,7 @@ type CssVarsObject = Record<string, string | number | undefined>;
 function iterateObject(
   tokenObject: object | string | number | boolean,
   cssVarsObject: CssVarsObject,
-  prefix: string[]
+  prefix: string[],
 ) {
   if (Array.isArray(tokenObject)) {
     tokenObject.forEach((item, index) => {
@@ -62,7 +62,7 @@ function generateCssForTheme(theme: Theme, prefix = ['']) {
 
 export function generateCss(
   options: PluginCustomOptions,
-  generationOptions: CssGenerationOptions = {}
+  generationOptions: CssGenerationOptions = {},
 ) {
   const { injectInRoot = true, defaultThemeKey = 'theme' } = generationOptions;
   const { cssVariablesPrefix = 'mui', themeArgs } = options;

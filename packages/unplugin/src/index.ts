@@ -70,7 +70,7 @@ function isZeroRuntimeThemeFile(fileName: string) {
 
 function isZeroRuntimeProcessableFile(
   fileName: string,
-  transformLibraries: string[]
+  transformLibraries: string[],
 ) {
   const isNodeModule = fileName.includes('node_modules');
   const isTransformableFile =
@@ -93,8 +93,6 @@ const globalCssLookup = new Map<string, string>();
 export const plugin = createUnplugin<PluginOptions, true>((options) => {
   const {
     theme,
-    writeCache,
-    restoreCache,
     meta,
     cssVariablesPrefix = 'mui',
     injectDefaultThemeInRoot = true,
@@ -133,12 +131,12 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
       loadInclude(id) {
         return isZeroRuntimeThemeFile(id);
       },
-      load(id) {
+      load() {
         return generateCss(
           { themeArgs, cssVariablesPrefix },
           {
             injectInRoot: injectDefaultThemeInRoot,
-          }
+          },
         );
       },
     },
@@ -177,7 +175,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
         const asyncResolve: typeof asyncResolveFallback = async (
           what,
           importer,
-          stack
+          stack,
         ) => {
           const result = asyncResolveOpt?.(what);
           if (typeof result === 'string') {
@@ -195,7 +193,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
           asyncResolve,
           {},
           cache,
-          emitter
+          emitter,
         );
         let { cssText } = result;
         if (!cssText || (meta?.type === 'next' && !meta.outputCss)) {

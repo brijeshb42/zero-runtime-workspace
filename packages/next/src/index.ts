@@ -9,19 +9,19 @@ export type { ZeroPluginConfig };
 
 export function withZeroPlugin(
   nextConfig: NextConfig,
-  zeroConfig: ZeroPluginConfig
+  zeroConfig: ZeroPluginConfig,
 ) {
   const { babelOptions, ...rest } = zeroConfig;
   const webpack: Exclude<NextConfig['webpack'], undefined> = (
     config,
-    context
+    context,
   ) => {
     const { dir, dev, isServer, config: resolvedNextConfig } = context;
 
     const findPagesDirResult = findPagesDir(
       dir,
       // @ts-expect-error next.js v12 accepts 2 arguments, while v13 only accepts 1
-      resolvedNextConfig.experimental?.appDir ?? false
+      resolvedNextConfig.experimental?.appDir ?? false,
     );
 
     let hasAppDir = false;
@@ -55,7 +55,7 @@ export function withZeroPlugin(
           ...babelOptions,
           presets: [...(babelOptions?.presets ?? []), 'next/babel'],
         },
-      })
+      }),
     );
 
     if (typeof nextConfig.webpack === 'function') {
