@@ -24,13 +24,13 @@ importers:
   apps/local-ui-lib:
     dependencies:
       '@mui/zero-runtime':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/runtime
 
   apps/next-app:
     dependencies:
       '@mui/zero-runtime':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/runtime
       next:
         specifier: 13.5.6
@@ -46,7 +46,7 @@ importers:
         specifier: ^5.14.16
         version: 5.14.16(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@mui/zero-next-plugin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/next
       '@types/node':
         specifier: ^20
@@ -67,13 +67,13 @@ importers:
         specifier: ^5.0.0-beta.20
         version: 5.0.0-beta.22(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@mui/zero-runtime':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/runtime
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
       local-ui-lib:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../local-ui-lib
       react:
         specifier: ^18.2.0
@@ -98,7 +98,7 @@ importers:
         specifier: ^5.14.16
         version: 5.14.16(@types/react@18.2.33)(react@18.2.0)
       '@mui/zero-vite-plugin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/vite
       '@types/react':
         specifier: ^18.2.31
@@ -119,10 +119,10 @@ importers:
         specifier: ^5.14.16
         version: 5.14.16(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@mui/zero-runtime':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/runtime
       local-ui-lib:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../local-ui-lib
       react:
         specifier: ^18.2.0
@@ -132,7 +132,7 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       '@mui/zero-unplugin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/unplugin
       '@types/react':
         specifier: ^18.2.33
@@ -165,11 +165,8 @@ importers:
   packages/next:
     dependencies:
       '@mui/zero-unplugin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../unplugin
-      mkdirp:
-        specifier: ^3.0.1
-        version: 3.0.1
     devDependencies:
       next:
         specifier: ^13.0.0
@@ -260,7 +257,7 @@ importers:
         specifier: ^4.5.3
         version: 4.5.3
       '@mui/zero-runtime':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../runtime
       unplugin:
         specifier: ^1.5.0
@@ -288,7 +285,7 @@ importers:
         specifier: ^4.5.3
         version: 4.5.3
       '@mui/zero-runtime':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../runtime
     devDependencies:
       '@types/babel__core':
@@ -4294,12 +4291,6 @@ packages:
     resolution: {integrity: sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==}
     engines: {node: '>=16 || 14 >=14.17'}
     dev: true
-
-  /mkdirp@3.0.1:
-    resolution: {integrity: sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dev: false
 
   /ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
