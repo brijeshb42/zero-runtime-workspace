@@ -7,7 +7,7 @@ const baseConfig: Options = {
   ...configOptions,
   tsconfig: './tsconfig.build.json',
   cjsInterop: true,
-  entry: ['./src/index.ts', './src/next-font.ts'],
+  entry: ['./src/index.ts', './src/virtual-css-loader.js'],
 };
 
 export default defineConfig(baseConfig);

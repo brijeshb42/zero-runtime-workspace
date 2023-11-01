@@ -3,3 +3,4 @@ dist/
 /packages/runtime/processors/
 /packages/runtime/utils/
 /packages/runtime/exports/
+/packages/next/loader.js

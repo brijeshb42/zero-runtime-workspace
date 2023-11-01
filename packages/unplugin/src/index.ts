@@ -3,6 +3,7 @@ import {
   WebpackPluginInstance,
   createUnplugin,
   VitePlugin,
+  UnpluginOptions,
 } from 'unplugin';
 import { transformAsync } from '@babel/core';
 import type {
@@ -21,6 +22,7 @@ type NextMeta = {
   dev: boolean;
   isServer: boolean;
   outputCss: boolean;
+  placeholderCssFile: string;
 };
 
 type ViteMeta = {
@@ -43,8 +45,6 @@ export type PluginOptions<Theme = unknown> = {
   sourceMap?: boolean;
   meta?: Meta;
   asyncResolve?: (what: string) => string | null;
-  writeCache?: (data: string) => Promise<void>;
-  restoreCache?: () => Promise<string>;
 } & Partial<LinariaPluginOptions>;
 
 const extensions = [
@@ -90,6 +90,8 @@ function isZeroRuntimeProcessableFile(
 const globalCssFileLookup = new Map<string, string>();
 const globalCssLookup = new Map<string, string>();
 
+const pluginName = 'ZeroWebpackPlugin';
+
 export const plugin = createUnplugin<PluginOptions, true>((options) => {
   const {
     theme,
@@ -117,28 +119,66 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
     meta?.type === 'next' ? globalCssLookup : new Map<string, string>();
   const cssFileLookup =
     meta?.type === 'next' ? globalCssFileLookup : new Map<string, string>();
+  const isNext = meta?.type === 'next';
+  const outputCss = isNext && meta.outputCss;
 
-  return [
+  const themeTokenCss = generateCss(
+    { themeArgs, cssVariablesPrefix },
+    {
+      injectInRoot: injectDefaultThemeInRoot,
+    },
+  );
+
+  const plugins: Array<UnpluginOptions> = [
     {
       name: 'zero-plugin-theme-tokens',
       enforce: 'pre',
-      resolveId(source: string) {
-        if (source === '@mui/zero-runtime/styles.css') {
-          return VIRTUAL_CSS_FILE;
-        }
-        return null;
+      webpack(compiler) {
+        compiler.hooks.normalModuleFactory.tap(pluginName, (nmf) => {
+          nmf.hooks.createModule.tap(
+            pluginName,
+            // @ts-expect-error CreateData is typed as 'object'...
+            (createData: {
+              matchResource?: string;
+              settings: { sideEffects?: boolean };
+            }) => {
+              if (
+                createData.matchResource &&
+                createData.matchResource.endsWith('.zero.css')
+              ) {
+                createData.settings.sideEffects = true;
+              }
+            },
+          );
+        });
       },
-      loadInclude(id) {
-        return isZeroRuntimeThemeFile(id);
-      },
-      load() {
-        return generateCss(
-          { themeArgs, cssVariablesPrefix },
-          {
-            injectInRoot: injectDefaultThemeInRoot,
-          },
-        );
-      },
+      ...(isNext
+        ? {
+            transformInclude(id) {
+              return (
+                // this file should exist in the package
+                id.endsWith('@mui/zero-runtime/styles.css') ||
+                id.endsWith('/runtime/styles.css')
+              );
+            },
+            transform() {
+              return themeTokenCss;
+            },
+          }
+        : {
+            resolveId(source: string) {
+              if (source === '@mui/zero-runtime/styles.css') {
+                return VIRTUAL_CSS_FILE;
+              }
+              return null;
+            },
+            loadInclude(id) {
+              return isZeroRuntimeThemeFile(id);
+            },
+            load() {
+              return themeTokenCss;
+            },
+          }),
     },
     {
       name: 'zero-plugin-transform-babel',
@@ -196,31 +236,52 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
           emitter,
         );
         let { cssText } = result;
-        if (!cssText || (meta?.type === 'next' && !meta.outputCss)) {
+        if (!cssText || (isNext && !outputCss)) {
           return {
             code: result.code,
             map: result.sourceMap,
           };
         }
-
         const slug = slugify(cssText);
         const cssFilename = `${slug}.zero.css`;
-        const cssId = `./${cssFilename}`;
 
         if (sourceMap && result.cssSourceMapText) {
           const map = Buffer.from(result.cssSourceMapText).toString('base64');
           cssText += `/*# sourceMappingURL=data:application/json;base64,${map}*/`;
         }
 
-        cssFileLookup.set(cssId, cssFilename);
-        cssLookup.set(cssFilename, cssText);
-        return {
-          code: `import ${JSON.stringify(`./${cssFilename}`)};\n${result.code}`,
-          map: result.sourceMap,
-        };
+        // Virtual modules do not work consistently in Next.js (the build is done at least
+        // thrice) resulting in error in subsequent builds. So we use a placeholder CSS
+        // file with the actual CSS content as part of the query params.
+        if (isNext) {
+          const data = `${meta.placeholderCssFile}?${encodeURIComponent(
+            JSON.stringify({
+              filename: cssFilename,
+              source: cssText,
+            }),
+          )}`;
+          return {
+            code: `import ${JSON.stringify(data)};\n${result.code}`,
+            map: result.sourceMap,
+          };
+        } else {
+          const cssId = `./${cssFilename}`;
+          cssFileLookup.set(cssId, cssFilename);
+          cssLookup.set(cssFilename, cssText);
+          return {
+            code: `import ${JSON.stringify(`./${cssFilename}`)};\n${
+              result.code
+            }`,
+            map: result.sourceMap,
+          };
+        }
       },
     },
-    {
+  ];
+
+  // This is already handled separately for Next.js using `placeholderCssFile`
+  if (!isNext) {
+    plugins.push({
       name: 'zero-plugin-load-output-css',
       enforce: 'pre',
       resolveId(source: string) {
@@ -232,8 +293,9 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
       load(id) {
         return cssLookup.get(id) ?? '';
       },
-    },
-  ];
+    });
+  }
+  return plugins;
 });
 
 export const webpack = plugin.webpack as unknown as UnpluginFactoryOutput<

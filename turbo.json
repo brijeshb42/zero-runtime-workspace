@@ -7,7 +7,7 @@
     },
     "build:app": {
       "dependsOn": ["^build", "types"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "clean": {
       "cache": false

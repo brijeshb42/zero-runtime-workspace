@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import type { NextConfig } from 'next';
 import { findPagesDir } from 'next/dist/lib/find-pages-dir';
 import {
@@ -6,6 +7,11 @@ import {
 } from '@mui/zero-unplugin';
 
 export type { ZeroPluginConfig };
+
+const extractionFile = path.join(
+  path.dirname(require.resolve('../package.json')),
+  'zero-virtual.css',
+);
 
 export function withZeroPlugin(
   nextConfig: NextConfig,
@@ -34,6 +40,11 @@ export function withZeroPlugin(
       hasAppDir = !!(findPagesDirResult && findPagesDirResult.appDir);
     }
 
+    config.module.rules.unshift({
+      enforce: 'pre',
+      test: (filename: string) => filename.endsWith('zero-virtual.css'),
+      use: require.resolve('../loader'),
+    });
     config.plugins.push(
       zeroWebpackPlugin({
         ...rest,
@@ -42,6 +53,7 @@ export function withZeroPlugin(
           dev,
           isServer,
           outputCss: dev || hasAppDir || !isServer,
+          placeholderCssFile: extractionFile,
         },
         asyncResolve(what) {
           if (what === 'next/image') {
