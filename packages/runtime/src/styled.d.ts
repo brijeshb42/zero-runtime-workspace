@@ -5,22 +5,7 @@ import type { SxProp } from './sx';
 
 type Falsy = false | 0 | '' | null | undefined;
 
-export interface StyledVariants<Props extends object> {
-  props: Partial<Props>;
-  style: CSSObject<Props>;
-}
-
-export type StyledCssArgument<Props extends object> = CSSObject<Props> & {
-  variants?: Array<StyledVariants<Props>>;
-};
-
-export type StyledCallback<Props extends object> = (
-  buildArg: ThemeArgs,
-) => StyledCssArgument<Props>;
-
-export type StyledArgument<Props extends object> =
-  | StyledCssArgument<Props>
-  | StyledCallback<Props>;
+type BaseDefaultProps = object;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type NoInfer<T> = [T][T extends any ? 0 : never];
@@ -33,44 +18,65 @@ export type Substitute<A extends object, B extends object> = FastOmit<
 > &
   B;
 
+export interface StyledVariants<Props extends BaseDefaultProps> {
+  props: Partial<Props>;
+  style: CSSObject<Props>;
+}
+
+export type StyledCssArgument<Props extends BaseDefaultProps> =
+  CSSObject<Props> & {
+    variants?: Array<StyledVariants<Props>>;
+  };
+
+export type StyledCallback<Props extends BaseDefaultProps> = (
+  buildArg: ThemeArgs,
+) => StyledCssArgument<Props>;
+
+export type StyledArgument<Props extends BaseDefaultProps> =
+  | StyledCssArgument<Props>
+  | StyledCallback<Props>;
+
 export type PolymorphicComponentProps<
   BaseProps extends object,
-  AsTarget extends React.ElementType | void,
+  AsTarget extends React.ElementType | undefined,
   AsTargetProps extends object = AsTarget extends React.ElementType
     ? React.ComponentPropsWithRef<AsTarget>
-    : object,
+    : BaseDefaultProps,
 > = NoInfer<Omit<Substitute<BaseProps, AsTargetProps>, 'as'>> & {
   as?: AsTarget;
   sx?: SxProp;
 };
 
-export interface PolymorphicComponent<BaseProps extends object>
+export interface PolymorphicComponent<BaseProps extends BaseDefaultProps>
   extends React.ForwardRefExoticComponent<BaseProps> {
-  <AsTarget extends React.ElementType | void = void>(
+  <AsTarget extends React.ElementType | undefined = undefined>(
     props: PolymorphicComponentProps<BaseProps, AsTarget>,
   ): JSX.Element;
 }
 
-export interface StyledComponent<Props extends object = object>
-  extends PolymorphicComponent<Props> {
+export interface StyledComponent<
+  Props extends BaseDefaultProps = BaseDefaultProps,
+> extends PolymorphicComponent<Props> {
   defaultProps?: Partial<Props> | undefined;
   toString: () => string;
 }
 
-export type CreateStyledComponent<
+export interface CreateStyledComponent<
   Component extends React.ElementType,
   OuterProps extends object,
-> = {
+> {
   /**
    * @typeparam Props: Additional props to add to the styled component
    */
-  <Props extends object = object>(
-    ...styles: Array<StyledArgument<Substitute<OuterProps, Props>>>
+  <Props extends BaseDefaultProps = BaseDefaultProps>(
+    ...styles: Array<StyledArgument<OuterProps & Props>>
   ): StyledComponent<Substitute<OuterProps, Props>> &
-    (Component extends string ? object : Component);
-};
+    (Component extends string ? BaseDefaultProps : Component);
+}
 
-export interface StyledOptions<Props extends object = unknown> {
+export interface StyledOptions<
+  Props extends BaseDefaultProps = BaseDefaultProps,
+> {
   name?: string;
   slot?: string;
   skipSx?: boolean;
@@ -81,17 +87,16 @@ export interface StyledOptions<Props extends object = unknown> {
   ) => (string | Falsy) | Array<string | Falsy>;
 }
 
-export type CreateStyled = {
+export interface CreateStyled {
   <
-    OuterProps extends object,
     TagOrComponent extends React.ElementType,
-    FinalProps extends object = OuterProps &
-      React.ComponentPropsWithRef<TagOrComponent>,
+    FinalProps extends
+      BaseDefaultProps = React.ComponentPropsWithRef<TagOrComponent>,
   >(
     tag: TagOrComponent,
     options?: StyledOptions,
   ): CreateStyledComponent<TagOrComponent, FinalProps>;
-};
+}
 
 export type CreateStyledIndex = {
   [Key in keyof JSX.IntrinsicElements]: CreateStyledComponent<

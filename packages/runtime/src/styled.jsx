@@ -112,18 +112,39 @@ export default function styled(tag, options = {}) {
       getVariantClasses(props, variants),
     );
     const toPassProps = Object.keys(restProps)
-      .filter((item) => shouldForwardProp(item))
+      .filter((item) => {
+        const res = shouldForwardProp(item);
+        if (res) {
+          return defaultShouldForwardProp(item);
+        }
+        return false;
+      })
       .reduce((acc, key) => {
         acc[key] = restProps[key];
         return acc;
       }, {});
 
+    // eslint-disable-next-line no-underscore-dangle
+    if (!Component.__isStyled || typeof Component === 'string') {
+      return (
+        <Component
+          {...toPassProps}
+          ref={ref}
+          className={finalClassName}
+          style={{
+            ...style,
+            ...varStyles,
+          }}
+        />
+      );
+    }
+
     return (
       <Component
         {...toPassProps}
+        ownerState={ownerState}
         ref={ref}
         className={finalClassName}
-        ownerState={Component.$$isStyled ? ownerState : undefined}
         style={{
           ...style,
           ...varStyles,
@@ -135,7 +156,7 @@ export default function styled(tag, options = {}) {
   StyledComponent.displayName = `Styled(${componentName})`;
   StyledComponent.defaultProps = defaultProps;
   // eslint-disable-next-line no-underscore-dangle
-  StyledComponent.$$isStyled = true;
+  StyledComponent.__isStyled = true;
 
   return StyledComponent;
 }
