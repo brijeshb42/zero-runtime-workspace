@@ -1,9 +1,9 @@
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import reactPlugin from '@vitejs/plugin-react';
 import { zeroVitePlugin as zeroPlugin } from '@mui/zero-vite-plugin';
-import { createTheme } from '@mui/material/styles';
+import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 
-const theme = createTheme();
+const theme = extendTheme();
 // @TODO - Make this part of the main package
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error

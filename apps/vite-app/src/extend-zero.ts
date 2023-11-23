@@ -1,10 +1,9 @@
-import type { Theme } from '@mui/material/styles';
+import type { experimental_extendTheme } from '@mui/material/styles';
 
 declare module '@mui/zero-runtime/theme' {
-  export interface ThemeArgs {
-    theme: Theme & {
+  interface ThemeArgs {
+    theme: ReturnType<typeof experimental_extendTheme> & {
       applyDarkStyles<T>(obj: T): Record<string, T>;
-      vars?: Theme;
     };
   }
 }

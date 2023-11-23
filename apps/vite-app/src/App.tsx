@@ -104,7 +104,7 @@ export function App({ isRed }: AppProps) {
       <div>
         <HalfWidth
           sx={({ theme }) => ({
-            color: theme.palette.primary.main,
+            color: (theme.vars || theme).palette.primary.main,
             fontSize: isRed ? 'h1.fontSize' : 'h2.fontSize',
             ':hover': {
               backgroundColor: ['primary.dark', 'secondary.main'],

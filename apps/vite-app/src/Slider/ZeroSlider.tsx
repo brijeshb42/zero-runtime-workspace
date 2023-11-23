@@ -15,6 +15,7 @@ import SliderValueLabel from '@mui/material/Slider/SliderValueLabel';
 import { useSlider, valueToPercent } from '@mui/base/useSlider';
 // @ts-expect-error there are no type definitions for the package
 import { alpha, lighten, darken } from '../utils/colorManipulator';
+import type { Theme } from '@mui/material/styles';
 
 const shouldSpreadAdditionalProps = (Slot?: React.ElementType) => {
   return !Slot || !isHostComponent(Slot);
@@ -32,7 +33,6 @@ const SliderRoot = styled('span', {
   name: 'MuiSlider',
   slot: 'Root',
   overridesResolver(props, styles) {
-    // @ts-expect-error
     const { ownerState } = props;
     return [
       styles.root,
@@ -59,7 +59,7 @@ const SliderRoot = styled('span', {
   [`&.${sliderClasses.disabled}`]: {
     pointerEvents: 'none',
     cursor: 'default',
-    color: theme.palette.grey[400],
+    color: (theme.vars || theme).palette.grey[400],
   },
   [`&.${sliderClasses.dragging}`]: {
     [`& .${sliderClasses.thumb}, & .${sliderClasses.track}`]: {
@@ -72,7 +72,7 @@ const SliderRoot = styled('span', {
         return color === 'primary';
       },
       style: {
-        color: theme.palette.primary.main,
+        color: (theme.vars || theme).palette.primary.main,
       },
     },
     {
@@ -80,7 +80,7 @@ const SliderRoot = styled('span', {
         color: 'secondary',
       },
       style: {
-        color: theme.palette.secondary.main,
+        color: (theme.vars || theme).palette.secondary.main,
       },
     },
     {
@@ -205,10 +205,18 @@ const SliderTrack = styled('span', {
   slot: 'Track',
   overridesResolver: (props, styles) => styles.track,
 })<SliderNestedOwnerState>(({ theme }) => {
-  const lightPrimaryColor = lighten(theme.palette.primary.main, 0.62);
-  const lightSecondaryColor = lighten(theme.palette.secondary.main, 0.62);
-  const darkPrimaryColor = darken(theme.palette.primary.main, 0.5);
-  const darkSecondaryColor = darken(theme.palette.secondary.main, 0.5);
+  const lightPrimaryColor = theme.vars
+    ? theme.vars.palette.Slider.primaryTrack
+    : lighten(theme.palette.primary.main, 0.62);
+  const lightSecondaryColor = theme.vars
+    ? theme.vars.palette.Slider.secondaryTrack
+    : lighten(theme.palette.secondary.main, 0.62);
+  const darkPrimaryColor = theme.vars
+    ? theme.vars.palette.Slider.primaryTrack
+    : darken(theme.palette.primary.main, 0.5);
+  const darkSecondaryColor = theme.vars
+    ? theme.vars.palette.Slider.secondaryTrack
+    : darken(theme.palette.secondary.main, 0.5);
 
   return {
     display: 'block',
@@ -374,7 +382,7 @@ const SliderThumb = styled('span', {
       style: {
         '--slider-thumb-shadow-color': theme.vars
           ? `rgba(${theme.vars.palette.primary.mainChannel} / 0.16)`
-          : alpha(theme.palette.primary.main, 0.16),
+          : alpha((theme as Theme).palette.primary.main, 0.16),
       },
     },
     {
@@ -384,7 +392,7 @@ const SliderThumb = styled('span', {
       style: {
         '--slider-thumb-shadow-color': theme.vars
           ? `rgba(${theme.vars.palette.secondary.mainChannel} / 0.16)`
-          : alpha(theme.palette.secondary.main, 0.16),
+          : alpha((theme as Theme).palette.secondary.main, 0.16),
       },
     },
     {
