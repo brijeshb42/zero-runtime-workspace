@@ -5,12 +5,15 @@ function getVariantClasses(componentProps, variants) {
   const { ownerState = {} } = componentProps;
   const variantClasses = variants
     .filter(({ props: variantProps }) =>
-      Object.entries(variantProps).every(([propKey, propValue]) => {
-        return (
-          ownerState[propKey] === propValue ||
-          componentProps[propKey] === propValue
-        );
-      }),
+      typeof variantProps === 'function'
+        ? variantProps(componentProps.ownerState) ||
+          variantProps(componentProps)
+        : Object.entries(variantProps).every(([propKey, propValue]) => {
+            return (
+              ownerState[propKey] === propValue ||
+              componentProps[propKey] === propValue
+            );
+          }),
     )
     .map(({ className }) => className);
   return variantClasses;

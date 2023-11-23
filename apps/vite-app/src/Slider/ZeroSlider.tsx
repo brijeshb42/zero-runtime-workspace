@@ -68,8 +68,8 @@ const SliderRoot = styled('span', {
   },
   variants: [
     {
-      props: {
-        color: 'primary',
+      props({ color }) {
+        return color === 'primary';
       },
       style: {
         color: theme.palette.primary.main,

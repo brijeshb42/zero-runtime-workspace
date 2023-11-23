@@ -19,7 +19,7 @@ export type Substitute<A extends object, B extends object> = FastOmit<
   B;
 
 export interface StyledVariants<Props extends BaseDefaultProps> {
-  props: Partial<Props>;
+  props: Partial<Props> | ((props: Props) => boolean);
   style: CSSObject<Props>;
 }
 
@@ -82,7 +82,8 @@ export interface StyledOptions<
   skipSx?: boolean;
   skipVariantsResolver?: boolean;
   overridesResolver?: (
-    props: Props,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    props: any | Props,
     styles: Record<string, string>,
   ) => (string | Falsy) | Array<string | Falsy>;
 }

@@ -24,12 +24,14 @@ import BaseProcessor from './base-processor';
 import { Theme } from '../utils/generateCss';
 
 type VariantData = {
-  props: Record<string, string | number | boolean | null>;
+  props: (
+    componentProps: unknown,
+  ) => boolean | Record<string, string | number | boolean | null>;
   style: object;
 };
 
 type VariantDataTransformed = {
-  props: Record<string, string | number | boolean | null>;
+  props: VariantData['props'];
   className: string;
 };
 
