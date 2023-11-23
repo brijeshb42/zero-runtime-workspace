@@ -6,9 +6,11 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { webpack: zeroPlugin } = require('@mui/zero-unplugin');
-const { createTheme } = require('@mui/material/styles');
+const {
+  experimental_extendTheme: extendTheme,
+} = require('@mui/material/styles');
 
-const theme = createTheme();
+const theme = extendTheme();
 
 /**
  * @typedef {import('@mui/zero-webpack-plugin').ZeroWebpackPluginOptions} ZeroWebpackPluginOptions

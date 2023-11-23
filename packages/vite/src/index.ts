@@ -2,6 +2,7 @@ import type { Plugin } from 'vite';
 import {
   generateCss,
   preprocessor as basePreprocessor,
+  generateThemeTokens,
 } from '@mui/zero-runtime/utils';
 import { transformAsync } from '@babel/core';
 import baseZeroVitePlugin, { type VitePluginOptions } from './zero-vite-plugin';
@@ -23,6 +24,7 @@ export interface ZeroVitePluginOptions extends VitePluginOptions {
 }
 
 const VIRTUAL_CSS_FILE = `\0zero-runtime-styles.css`;
+const VIRTUAL_THEME_FILE = `\0zero-runtime-theme.js`;
 
 const extensions = [
   '.js',
@@ -72,25 +74,30 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
       resolveId(source) {
         if (source === '@mui/zero-runtime/styles.css') {
           return VIRTUAL_CSS_FILE;
+        } else if (source === '@mui/zero-runtime/theme') {
+          return VIRTUAL_THEME_FILE;
         }
         return null;
       },
       load(id) {
-        if (id !== VIRTUAL_CSS_FILE) {
-          return null;
-        }
-        return generateCss(
-          {
-            cssVariablesPrefix,
-            themeArgs: {
-              theme,
+        if (id === VIRTUAL_CSS_FILE) {
+          return generateCss(
+            {
+              cssVariablesPrefix,
+              themeArgs: {
+                theme,
+              },
             },
-          },
-          {
-            defaultThemeKey: 'theme',
-            injectInRoot: injectDefaultThemeInRoot,
-          },
-        );
+            {
+              defaultThemeKey: 'theme',
+              injectInRoot: injectDefaultThemeInRoot,
+            },
+          );
+        } else if (id === VIRTUAL_THEME_FILE) {
+          const tokens = generateThemeTokens(theme);
+          return `export default ${JSON.stringify(tokens)};`;
+        }
+        return null;
       },
     };
   }

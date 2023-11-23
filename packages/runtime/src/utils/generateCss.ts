@@ -85,3 +85,16 @@ export function generateCss(
   });
   return cssStr;
 }
+
+export function generateThemeTokens(theme: unknown) {
+  if (!theme || typeof theme !== 'object') {
+    return {};
+  }
+  if ('vars' in theme && theme.vars) {
+    return {
+      ...theme.vars,
+      vars: theme,
+    };
+  }
+  return {};
+}

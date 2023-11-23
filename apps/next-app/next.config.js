@@ -1,9 +1,11 @@
 /* eslint-disable */
 /* eslint-env node */
 const { withZeroPlugin } = require('@mui/zero-next-plugin');
-const { createTheme } = require('@mui/material/styles');
+const {
+  experimental_extendTheme: extendTheme,
+} = require('@mui/material/styles');
 
-const theme = createTheme();
+const theme = extendTheme();
 
 /**
  * @typedef {import('@mui/zero-next-plugin').ZeroPluginConfig} ZeroPluginConfig

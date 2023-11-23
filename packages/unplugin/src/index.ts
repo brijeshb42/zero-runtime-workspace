@@ -15,6 +15,7 @@ import { createPerfMeter, asyncResolveFallback, slugify } from '@linaria/utils';
 import {
   generateCss,
   preprocessor as basePreprocessor,
+  generateThemeTokens,
 } from '@mui/zero-runtime/utils';
 
 type NextMeta = {
@@ -63,9 +64,10 @@ function hasCorectExtension(fileName: string) {
 }
 
 const VIRTUAL_CSS_FILE = `\0zero-runtime-styles.css`;
+const VIRTUAL_THEME_FILE = `\0zero-runtime-theme.js`;
 
 function isZeroRuntimeThemeFile(fileName: string) {
-  return fileName === VIRTUAL_CSS_FILE;
+  return fileName === VIRTUAL_CSS_FILE || fileName === VIRTUAL_THEME_FILE;
 }
 
 function isZeroRuntimeProcessableFile(
@@ -158,11 +160,19 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
               return (
                 // this file should exist in the package
                 id.endsWith('@mui/zero-runtime/styles.css') ||
-                id.endsWith('/runtime/styles.css')
+                id.endsWith('/runtime/styles.css') ||
+                id.endsWith('@mui/zero-runtime/theme') ||
+                id.endsWith('/runtime/theme.js')
               );
             },
-            transform() {
-              return themeTokenCss;
+            transform(_code, id) {
+              if (id.endsWith('styles.css')) {
+                return themeTokenCss;
+              }
+              if (id.endsWith('theme.js')) {
+                const tokens = generateThemeTokens(theme);
+                return `export default ${JSON.stringify(tokens)};`;
+              }
             },
           }
         : {
@@ -170,13 +180,21 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
               if (source === '@mui/zero-runtime/styles.css') {
                 return VIRTUAL_CSS_FILE;
               }
+              if (source === '@mui/zero-runtime/theme') {
+                return VIRTUAL_THEME_FILE;
+              }
               return null;
             },
             loadInclude(id) {
               return isZeroRuntimeThemeFile(id);
             },
-            load() {
-              return themeTokenCss;
+            load(id) {
+              if (id === VIRTUAL_CSS_FILE) {
+                return themeTokenCss;
+              } else if (id === VIRTUAL_THEME_FILE) {
+                const tokens = generateThemeTokens(theme);
+                return `export default ${JSON.stringify(tokens)};`;
+              }
             },
           }),
     },
