@@ -22,6 +22,7 @@
     "@emotion/styled": "^11.11.0",
     "@linaria/tags": "^4.5.4",
     "@linaria/utils": "^4.5.3",
+    "lodash.set": "^4.3.2",
     "@mui/system": "^5.14.16",
     "lodash.get": "^4.4.2",
     "stylis": "^4.2.0"
@@ -32,6 +33,7 @@
     "@types/babel__helper-module-imports": "^7.18.2",
     "@types/babel__helper-plugin-utils": "^7.10.2",
     "@types/lodash.get": "^4.4.7",
+    "@types/lodash.set": "^4.3.9",
     "@types/node": "^18.18.5",
     "@types/react": "^18.2.31",
     "@types/stylis": "^4.2.0",

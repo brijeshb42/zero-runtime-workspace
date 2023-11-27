@@ -170,7 +170,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
                 return themeTokenCss;
               }
               if (id.endsWith('theme.js')) {
-                const tokens = generateThemeTokens(theme);
+                const tokens = generateThemeTokens(theme, cssVariablesPrefix);
                 return `export default ${JSON.stringify(tokens)};`;
               }
             },
@@ -192,7 +192,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
               if (id === VIRTUAL_CSS_FILE) {
                 return themeTokenCss;
               } else if (id === VIRTUAL_THEME_FILE) {
-                const tokens = generateThemeTokens(theme);
+                const tokens = generateThemeTokens(theme, cssVariablesPrefix);
                 return `export default ${JSON.stringify(tokens)};`;
               }
             },

@@ -94,7 +94,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
             },
           );
         } else if (id === VIRTUAL_THEME_FILE) {
-          const tokens = generateThemeTokens(theme);
+          const tokens = generateThemeTokens(theme, cssVariablesPrefix);
           return `export default ${JSON.stringify(tokens)};`;
         }
         return null;
