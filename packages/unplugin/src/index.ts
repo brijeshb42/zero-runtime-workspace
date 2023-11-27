@@ -108,11 +108,21 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
     ...rest
   } = options;
   const themeArgs = { theme };
+  const isExtendTheme = !!(
+    theme &&
+    typeof theme === 'object' &&
+    'vars' in theme &&
+    theme.vars
+  );
+  const varPrefix: string =
+    isExtendTheme && 'cssVarPrefix' in theme
+      ? (theme.cssVarPrefix as string) ?? cssVariablesPrefix
+      : cssVariablesPrefix;
   const linariaOptions = {
     themeArgs: {
       theme,
     },
-    cssVariablesPrefix,
+    cssVariablesPrefix: varPrefix,
     ...rest,
   };
   const cache = new TransformCacheCollection();
@@ -125,7 +135,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
   const outputCss = isNext && meta.outputCss;
 
   const themeTokenCss = generateCss(
-    { themeArgs, cssVariablesPrefix },
+    { themeArgs, cssVariablesPrefix: varPrefix },
     {
       injectInRoot: injectDefaultThemeInRoot,
     },
@@ -170,7 +180,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
                 return themeTokenCss;
               }
               if (id.endsWith('theme.js')) {
-                const tokens = generateThemeTokens(theme, cssVariablesPrefix);
+                const tokens = generateThemeTokens(theme, varPrefix);
                 return `export default ${JSON.stringify(tokens)};`;
               }
             },
@@ -192,7 +202,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
               if (id === VIRTUAL_CSS_FILE) {
                 return themeTokenCss;
               } else if (id === VIRTUAL_THEME_FILE) {
-                const tokens = generateThemeTokens(theme, cssVariablesPrefix);
+                const tokens = generateThemeTokens(theme, varPrefix);
                 return `export default ${JSON.stringify(tokens)};`;
               }
             },

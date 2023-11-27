@@ -66,6 +66,16 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
     transformLibraries = [],
     ...rest
   } = options ?? {};
+  const isExtendTheme = !!(
+    theme &&
+    typeof theme === 'object' &&
+    'vars' in theme &&
+    theme.vars
+  );
+  const varPrefix: string =
+    isExtendTheme && 'cssVarPrefix' in theme
+      ? (theme.cssVarPrefix as string) ?? cssVariablesPrefix
+      : cssVariablesPrefix;
 
   function injectMUITokensPlugin(): Plugin {
     return {
@@ -83,7 +93,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
         if (id === VIRTUAL_CSS_FILE) {
           return generateCss(
             {
-              cssVariablesPrefix,
+              cssVariablesPrefix: varPrefix,
               themeArgs: {
                 theme,
               },
@@ -94,7 +104,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
             },
           );
         } else if (id === VIRTUAL_THEME_FILE) {
-          const tokens = generateThemeTokens(theme, cssVariablesPrefix);
+          const tokens = generateThemeTokens(theme, varPrefix);
           return `export default ${JSON.stringify(tokens)};`;
         }
         return null;
@@ -130,7 +140,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
   }
 
   const zeroPlugin = baseZeroVitePlugin({
-    cssVariablesPrefix,
+    cssVariablesPrefix: varPrefix,
     themeArgs: {
       theme,
     },
