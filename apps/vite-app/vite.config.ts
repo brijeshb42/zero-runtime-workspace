@@ -16,7 +16,6 @@ theme.applyDarkStyles = function applyDarkStyles(obj) {
 export default defineConfig({
   plugins: [
     zeroPlugin({
-      cssVariablesPrefix: 'app',
       theme,
       transformLibraries: ['local-library'],
     }),

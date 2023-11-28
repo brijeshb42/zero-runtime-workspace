@@ -10,13 +10,20 @@ const ShowCaseDiv = styled('div')({
   },
 });
 
-const HalfWidth = styled.div({
+const HalfWidth = styled.div<{ isRed?: boolean }>(({ theme }) => ({
   marginLeft: 20,
   width: '50%',
   maxHeight: 100,
   padding: 20,
   border: '1px solid #ccc',
-});
+  color: ({ isRed }) => {
+    console.log(theme);
+    if (isRed) {
+      return (theme.vars || theme).palette.primary.main;
+    }
+    return (theme.vars || theme).palette.secondary.main;
+  },
+}));
 
 type AppProps = {
   isRed?: boolean;
@@ -103,6 +110,7 @@ export function App({ isRed }: AppProps) {
       </div>
       <div>
         <HalfWidth
+          isRed={count % 2 === 0}
           sx={({ theme }) => ({
             color: (theme.vars || theme).palette.primary.main,
             fontSize: isRed ? 'h1.fontSize' : 'h2.fontSize',

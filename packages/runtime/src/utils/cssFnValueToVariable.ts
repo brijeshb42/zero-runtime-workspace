@@ -1,4 +1,4 @@
-import type { ExpressionValue } from '@linaria/utils';
+import type { ExpressionValue, FunctionValue } from '@linaria/utils';
 import { transformSync, type Node } from '@babel/core';
 import { parseExpression } from '@babel/parser';
 import type { Expression } from '@linaria/tags';
@@ -27,20 +27,61 @@ type CssFnValueToVariableParams = {
   getVariableName: (cssKey: string, source: string, hasUnit: boolean) => string;
   filename?: string | null;
   options: PluginCustomOptions;
+  includeThemeArg?: boolean;
+  themeImportIdentifier?: string;
 };
+
+// const expressionCache = new WeakMap<ExpressionValue, Expression>();
+
+// @TODO - Implement default theme argument for non-theme config as well.
+function parseAndWrapExpression(
+  functionString: string,
+  expressionValue?: FunctionValue,
+  themeImportIdentifier?: string,
+) {
+  if (!expressionValue) {
+    return parseExpression(functionString);
+  }
+  const expression = parseExpression(functionString);
+  if (
+    expression.type === 'FunctionExpression' ||
+    expression.type === 'ArrowFunctionExpression'
+  ) {
+    // let parsedParentExpression = expressionCache.get(expressionValue);
+    // if (!parsedParentExpression) {
+    //   parsedParentExpression = parseExpression(expressionValue.source);
+    //   if (!parsedParentExpression) {
+    //     throw new Error("MUI: Could not parse styled function's source.");
+    //   }
+    // }
+    expression.params.push(
+      t.assignmentPattern(
+        t.identifier('theme'),
+        t.identifier(themeImportIdentifier ?? 'theme'),
+      ),
+    );
+  }
+  return expression;
+}
 
 function transformThemeKeysInFn(
   styleKey: string,
   functionString: string,
   options: PluginCustomOptions,
   filename?: string,
+  expressionValue?: FunctionValue,
+  themeImportIdentifier?: string,
 ) {
   const { themeArgs: { theme } = {} } = options;
 
   // return the function as-is if sxConfig does not contain
   // this css key
   if (!theme) {
-    return parseExpression(functionString);
+    return parseAndWrapExpression(
+      functionString,
+      expressionValue,
+      themeImportIdentifier,
+    );
   }
 
   const result = transformSync(functionString, {
@@ -60,15 +101,38 @@ function transformThemeKeysInFn(
   });
   const firstItem = result?.ast?.program.body[0];
   if (!firstItem) {
-    return parseExpression(functionString);
+    return parseAndWrapExpression(
+      functionString,
+      expressionValue,
+      themeImportIdentifier,
+    );
   }
+  const defaultThemeParam = t.assignmentPattern(
+    t.identifier('theme'),
+    t.identifier(themeImportIdentifier ?? 'theme'),
+  );
   if (firstItem.type === 'ExpressionStatement') {
-    return firstItem.expression;
+    const { expression } = firstItem;
+    if (
+      expression.type === 'ArrowFunctionExpression' ||
+      expression.type === 'FunctionExpression'
+    ) {
+      expression.params.push(defaultThemeParam);
+    }
+    return expression;
   }
   if (firstItem.type === 'FunctionDeclaration') {
-    return t.functionExpression(null, firstItem.params, firstItem.body);
+    return t.functionExpression(
+      null,
+      [...firstItem.params, defaultThemeParam],
+      firstItem.body,
+    );
   }
-  return parseExpression(functionString);
+  return parseAndWrapExpression(
+    functionString,
+    expressionValue,
+    themeImportIdentifier,
+  );
 }
 
 function iterateAndReplaceFunctions(
@@ -78,6 +142,8 @@ function iterateAndReplaceFunctions(
   options: PluginCustomOptions,
   acc: [string, Node, boolean][],
   filename?: string,
+  themeImportIdentifier?: string,
+  includeThemeArg = false,
 ) {
   const css = styleObj as StyleObj;
   Object.keys(css).forEach((key) => {
@@ -92,6 +158,8 @@ function iterateAndReplaceFunctions(
           options,
           acc,
           filename,
+          themeImportIdentifier,
+          includeThemeArg,
         );
       }
       return;
@@ -108,6 +176,10 @@ function iterateAndReplaceFunctions(
         fnString,
         options,
         filename,
+        includeThemeArg && expressionValue
+          ? (expressionValue as FunctionValue)
+          : undefined,
+        themeImportIdentifier,
       );
       const unitLess = isUnitLess(key);
       const variableId = getVariableName(key, fnString, unitLess);
@@ -137,6 +209,8 @@ export function cssFnValueToVariable({
   getVariableName,
   filename,
   options,
+  themeImportIdentifier,
+  includeThemeArg = false,
 }: CssFnValueToVariableParams) {
   const acc: [string, Expression, boolean][] = [];
   iterateAndReplaceFunctions(
@@ -146,6 +220,8 @@ export function cssFnValueToVariable({
     options,
     acc,
     filename ?? undefined,
+    themeImportIdentifier,
+    includeThemeArg,
   );
   return acc;
 }
