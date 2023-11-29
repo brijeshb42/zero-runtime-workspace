@@ -59,6 +59,9 @@
     "exports",
     "processors",
     "utils",
-    "package.json"
+    "package.json",
+    "styles.css",
+    "theme.d.ts",
+    "theme.js"
   ]
 }
