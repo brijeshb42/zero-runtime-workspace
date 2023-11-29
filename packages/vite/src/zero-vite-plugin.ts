@@ -22,10 +22,10 @@ import {
   TransformCacheCollection,
 } from '@linaria/babel-preset';
 import type { PluginOptions, Preprocessor } from '@linaria/babel-preset';
-import { createCustomDebug } from '@linaria/logger';
+import { linariaLogger } from '@linaria/logger';
 import type { IPerfMeterOptions } from '@linaria/utils';
 import { createPerfMeter, getFileIdx, syncResolve } from '@linaria/utils';
-import { type PluginCustomOptions } from '@mui/zero-runtime/utils';
+import { type PluginCustomOptions } from '@brijeshb42/zero-runtime/utils';
 
 export type VitePluginOptions = {
   debug?: IPerfMeterOptions | false | null | undefined;
@@ -112,6 +112,7 @@ export default function zeroVitePlugin({
       if (id in cssLookup) {
         return null;
       }
+
       let shouldReturn = url.includes('node_modules');
 
       if (shouldReturn) {
@@ -130,8 +131,8 @@ export default function zeroVitePlugin({
         return null;
       }
 
-      const log = createCustomDebug('rollup', getFileIdx(id));
-      log('Vite transform', id);
+      const log = linariaLogger.extend('vite');
+      log('Vite transform', getFileIdx(id));
 
       const asyncResolve = async (
         what: string,
@@ -169,24 +170,25 @@ export default function zeroVitePlugin({
         throw new Error(`Could not resolve ${what}`);
       };
 
-      const result = await transform(
-        code,
-        {
+      const transformServices = {
+        options: {
           filename: id,
+          root: process.cwd(),
           preprocessor,
           pluginOptions: rest,
         },
-        asyncResolve,
-        {},
         cache,
-        emitter,
-      );
+        eventEmitter: emitter,
+      };
+
+      const result = await transform(transformServices, code, asyncResolve);
 
       let { cssText, dependencies } = result;
 
       if (!cssText) {
         return null;
       }
+
       dependencies ??= [];
 
       const slug = slugify(cssText);

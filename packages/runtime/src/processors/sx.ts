@@ -177,7 +177,7 @@ export class SxProcessor extends BaseProcessor {
 
     return typeof customSlugFn === 'function'
       ? customSlugFn(context)
-      : buildSlug(customSlugFn, context);
+      : buildSlug(customSlugFn, { ...context });
   }
 
   // Implementation taken from Linaria - https://github.com/callstack/linaria/blob/master/packages/react/src/processors/styled.ts#L362

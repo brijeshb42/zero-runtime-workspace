@@ -1,5 +1,5 @@
 {
-  "name": "@mui/zero-vite-plugin",
+  "name": "@brijeshb42/zero-vite-plugin",
   "version": "0.0.1-alpha.0",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -13,10 +13,10 @@
   "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/plugin-syntax-typescript": "^7.22.5",
-    "@linaria/babel-preset": "^4.5.4",
-    "@linaria/logger": "^4.5.0",
-    "@linaria/utils": "^4.5.3",
-    "@mui/zero-runtime": "workspace:^"
+    "@linaria/babel-preset": "^5.0.4",
+    "@linaria/logger": "^5.0.0",
+    "@linaria/utils": "^5.0.2",
+    "@brijeshb42/zero-runtime": "workspace:^"
   },
   "devDependencies": {
     "@types/babel__core": "^7.20.3",

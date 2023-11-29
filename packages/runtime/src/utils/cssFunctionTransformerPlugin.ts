@@ -36,7 +36,7 @@ const cssFunctionTransformerPlugin = declare<BabelPluginOptions>(
     const finalPrefix = cssVariablesPrefix ? `${cssVariablesPrefix}-` : '';
 
     return {
-      name: '@mui/zero-internal/cssFunctionTransformerPlugin',
+      name: '@brijeshb42/zero-internal/cssFunctionTransformerPlugin',
       visitor: {
         Program: {
           exit(programPath) {

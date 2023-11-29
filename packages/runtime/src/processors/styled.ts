@@ -225,7 +225,7 @@ export class StyledProcessor extends BaseProcessor {
    */
   build(values: ValueCache): void {
     const themeImportIdentifier = this.astService.addDefaultImport(
-      '@mui/zero-runtime/theme',
+      '@brijeshb42/zero-runtime/theme',
       'theme',
     );
     // all the variant definitions are collected here so that we can
@@ -372,7 +372,7 @@ export class StyledProcessor extends BaseProcessor {
       );
     }
     this.replacer(
-      t.callExpression(t.addNamedImport('styled', '@mui/zero-runtime'), [
+      t.callExpression(t.addNamedImport('styled', '@brijeshb42/zero-runtime'), [
         componentName,
         t.objectExpression(argProperties),
       ]),

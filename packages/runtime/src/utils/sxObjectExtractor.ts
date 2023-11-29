@@ -74,7 +74,7 @@ function traverseObjectExpression(
         !value.isLiteral() &&
         !isStaticObjectOrArrayExpression(value)
       ) {
-        const identifiers = findIdentifiers([value], 'referenced');
+        const identifiers = findIdentifiers([value], 'reference');
         const themeIdentifiers: NodePath<Identifier>[] = [];
         const localIdentifiers: NodePath<Identifier>[] = [];
         identifiers.forEach((id) => {

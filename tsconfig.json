@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "composite": true,
     "paths": {
-      "@mui/*": ["./packages/*/src"]
+      "@brijeshb42/*": ["./packages/*/src"]
     },
     "jsx": "react-jsx",
     "lib": ["ES6", "DOM"],

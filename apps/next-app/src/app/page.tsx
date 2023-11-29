@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import styles from './page.module.css';
-import { styled } from '@mui/zero-runtime';
+import { styled } from '@brijeshb42/zero-runtime';
 
 const Main = styled.main({
   display: 'flex',

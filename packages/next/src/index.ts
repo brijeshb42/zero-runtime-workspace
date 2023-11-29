@@ -4,7 +4,7 @@ import { findPagesDir } from 'next/dist/lib/find-pages-dir';
 import {
   webpack as zeroWebpackPlugin,
   PluginOptions as ZeroPluginConfig,
-} from '@mui/zero-unplugin';
+} from '@brijeshb42/zero-unplugin';
 
 export type { ZeroPluginConfig };
 
@@ -57,9 +57,9 @@ export function withZeroPlugin(
         },
         asyncResolve(what) {
           if (what === 'next/image') {
-            return require.resolve('@mui/zero-unplugin/next-image');
+            return require.resolve('@brijeshb42/zero-unplugin/next-image');
           } else if (what.startsWith('next/font')) {
-            return require.resolve('@mui/zero-unplugin/next-font');
+            return require.resolve('@brijeshb42/zero-unplugin/next-font');
           }
           return null;
         },

@@ -1,1 +1,1 @@
-import '@mui/zero-runtime/styles.css';
+import '@brijeshb42/zero-runtime/styles.css';

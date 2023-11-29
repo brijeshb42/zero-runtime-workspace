@@ -1,6 +1,6 @@
 {
-  "name": "@mui/zero-next-plugin",
-  "version": "0.0.1-alpha.0",
+  "name": "@brijeshb42/zero-next-plugin",
+  "version": "0.0.1-alpha.1",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@mui/zero-unplugin": "workspace:^"
+    "@brijeshb42/zero-unplugin": "workspace:^"
   },
   "devDependencies": {
     "next": "^14.0.1"
