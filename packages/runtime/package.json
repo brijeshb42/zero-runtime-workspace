@@ -23,12 +23,12 @@
     "@linaria/tags": "^4.5.4",
     "@linaria/utils": "^4.5.3",
     "lodash.set": "^4.3.2",
-    "@mui/system": "^5.14.16",
+    "@mui/system": "^5.14.18",
     "lodash.get": "^4.4.2",
     "stylis": "^4.2.0"
   },
   "devDependencies": {
-    "@mui/system": "^5.14.16",
+    "@mui/system": "^5.14.18",
     "@types/babel__core": "^7.20.3",
     "@types/babel__helper-module-imports": "^7.18.2",
     "@types/babel__helper-plugin-utils": "^7.10.2",
