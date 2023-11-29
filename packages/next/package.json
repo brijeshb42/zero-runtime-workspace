@@ -25,6 +25,8 @@
   },
   "files": [
     "dist",
+    "loader.js",
+    "zero-virtual.css",
     "package.json"
   ]
 }
