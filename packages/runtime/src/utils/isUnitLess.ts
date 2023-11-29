@@ -52,5 +52,5 @@ const unitlessKeys: { [key: string]: 1 } = {
 };
 
 export function isUnitLess(cssKey: string) {
-  return unitlessKeys[cssKey] === 1;
+  return unitlessKeys[cssKey] === 1 || cssKey.startsWith('--');
 }

@@ -13,6 +13,7 @@ import type {
   Replacements,
   ExpressionValue,
   LazyValue,
+  ConstValue,
 } from '@linaria/utils';
 import { parseExpression } from '@babel/parser';
 import type { SourceLocation } from '@babel/types';
@@ -28,6 +29,7 @@ type VariantData = {
     componentProps: unknown,
   ) => boolean | Record<string, string | number | boolean | null>;
   style: object;
+  originalExpression?: Exclude<ExpressionValue, ConstValue>;
 };
 
 type VariantDataTransformed = {
@@ -222,11 +224,20 @@ export class StyledProcessor extends BaseProcessor {
    * 3. Variants declared in theme object
    */
   build(values: ValueCache): void {
+    const themeImportIdentifier = this.astService.addDefaultImport(
+      '@mui/zero-runtime/theme',
+      'theme',
+    );
     // all the variant definitions are collected here so that we can
     // apply variant styles after base styles for more specific targetting.
     const variantsAccumulator: VariantData[] = [];
     this.styleArgs.forEach((styleArg) => {
-      this.processStyle(values, styleArg, variantsAccumulator);
+      this.processStyle(
+        values,
+        styleArg,
+        variantsAccumulator,
+        themeImportIdentifier.name,
+      );
     });
     this.processOverrides(values, variantsAccumulator);
     variantsAccumulator.forEach((variant) => {
@@ -376,6 +387,7 @@ export class StyledProcessor extends BaseProcessor {
     values: ValueCache,
     styleArg: ExpressionValue,
     variantsAccumulator?: VariantData[],
+    themeImportIdentifier?: string,
   ) {
     if (styleArg.kind === ValueType.CONST) {
       if (typeof styleArg.value === 'string') {
@@ -391,6 +403,7 @@ export class StyledProcessor extends BaseProcessor {
         styleObjOrFn as object | (() => void),
         styleArg,
         variantsAccumulator,
+        themeImportIdentifier,
       );
       const className = this.getClassName();
       this.baseClasses.push(className);
@@ -456,7 +469,11 @@ export class StyledProcessor extends BaseProcessor {
     const { displayName } = this.options;
     const className = this.getClassName(displayName ? 'variant' : undefined);
     const styleObjOrFn = variant.style;
-    const finalStyle = this.processCss(styleObjOrFn, null);
+    const originalExpression = variant.originalExpression;
+    const finalStyle = this.processCss(
+      styleObjOrFn,
+      originalExpression ?? null,
+    );
     this.collectedStyles.push([className, finalStyle, null]);
     this.collectedVariants.push({
       props: variant.props,
@@ -468,6 +485,7 @@ export class StyledProcessor extends BaseProcessor {
     styleObjOrFn: ((args: Record<string, unknown>) => void) | object,
     styleArg: ExpressionValue | null,
     variantsAccumulator?: VariantData[],
+    themeImportIdentifier?: string,
   ) {
     const { themeArgs = {} } = this.options as IOptions;
     const styleObj =
@@ -478,9 +496,16 @@ export class StyledProcessor extends BaseProcessor {
       return '';
     }
     if (styleObj.variants) {
-      variantsAccumulator?.push(...styleObj.variants);
-      delete styleObj.variants;
+      variantsAccumulator?.push(
+        ...styleObj.variants.map(
+          (variant: Omit<VariantData, 'originalExpression'>) => ({
+            ...variant,
+            originalExpression: styleArg,
+          }),
+        ),
+      );
     }
+    delete styleObj.variants;
     const res = cssFnValueToVariable({
       styleObj,
       expressionValue: styleArg,
@@ -488,6 +513,8 @@ export class StyledProcessor extends BaseProcessor {
         this.getCustomVariableId(cssKey, source, hasUnit),
       filename: this.context.filename,
       options: this.options as IOptions,
+      includeThemeArg: typeof styleObjOrFn === 'function',
+      themeImportIdentifier,
     });
     if (res.length) {
       this.collectedVariables.push(...res);

@@ -13,8 +13,7 @@ import { styled } from '@mui/zero-runtime';
 import { capitalize } from '@mui/material/utils';
 import SliderValueLabel from '@mui/material/Slider/SliderValueLabel';
 import { useSlider, valueToPercent } from '@mui/base/useSlider';
-// @ts-expect-error there are no type definitions for the package
-import { alpha, lighten, darken } from '../utils/colorManipulator';
+import { alpha, lighten, darken } from '@mui/system/colorManipulator';
 import type { Theme } from '@mui/material/styles';
 
 const shouldSpreadAdditionalProps = (Slot?: React.ElementType) => {
