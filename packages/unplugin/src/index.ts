@@ -316,6 +316,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
   if (transformSx) {
     plugins.push(babelTransformPlugin);
   }
+
   plugins.push(linariaTransformPlugin);
 
   // This is already handled separately for Next.js using `placeholderCssFile`
