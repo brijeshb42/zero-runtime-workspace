@@ -196,9 +196,15 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
         cache,
         eventEmitter: emitter,
       };
+
       const result = await transform(transformServices, code, asyncResolve);
+
+      if (!result.cssText) {
+        return null;
+      }
+
       let { cssText } = result;
-      if (!cssText || (isNext && !outputCss)) {
+      if (isNext && !outputCss) {
         return {
           code: result.code,
           map: result.sourceMap,
