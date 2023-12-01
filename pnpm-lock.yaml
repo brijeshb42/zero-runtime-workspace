@@ -127,7 +127,7 @@ importers:
         version: link:../../packages/vite
       '@mui/material':
         specifier: ^5.14.18
-        version: 5.14.18(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
+        version: 5.14.18(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@mui/utils':
         specifier: ^5.14.18
         version: 5.14.18(@types/react@18.2.33)(react@18.2.0)
@@ -248,6 +248,9 @@ importers:
         specifier: ^4.2.0
         version: 4.3.0
     devDependencies:
+      '@mui/material':
+        specifier: ^5.14.18
+        version: 5.14.18(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@mui/system':
         specifier: ^5.14.18
         version: 5.14.18(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.33)(react@18.2.0)
@@ -284,9 +287,6 @@ importers:
       '@babel/core':
         specifier: ^7.23.2
         version: 7.23.2
-      '@brijeshb42/zero-runtime':
-        specifier: workspace:^
-        version: link:../runtime
       '@linaria/babel-preset':
         specifier: ^5.0.4
         version: 5.0.4(typescript@5.3.2)
@@ -300,6 +300,9 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
     devDependencies:
+      '@brijeshb42/zero-runtime':
+        specifier: workspace:^
+        version: link:../runtime
       '@types/babel__core':
         specifier: ^7.20.3
         version: 7.20.3
@@ -2161,7 +2164,7 @@ packages:
       react-is: 18.2.0
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
 
-  /@mui/material@5.14.18(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0):
+  /@mui/material@5.14.18(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-y3UiR/JqrkF5xZR0sIKj6y7xwuEiweh9peiN3Zfjy1gXWXhz5wjlaLdoxFfKIEBUFfeQALxr/Y8avlHH+B9lpQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2179,6 +2182,8 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.2
+      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.33)(react@18.2.0)
       '@mui/base': 5.0.0-beta.24(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@mui/core-downloads-tracker': 5.14.18
       '@mui/system': 5.14.18(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.33)(react@18.2.0)

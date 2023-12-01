@@ -2,10 +2,12 @@ import { Options, defineConfig } from 'tsup';
 import config from '../../tsup.config';
 
 const processors = ['styled', 'sx', 'keyframes'];
+const external = ['react', 'react-is', 'prop-types'];
 
 const baseConfig = {
   ...(config as Options),
   tsconfig: './tsconfig.build.json',
+  external,
 };
 
 export default defineConfig([

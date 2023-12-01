@@ -1,6 +1,6 @@
 {
   "name": "@brijeshb42/zero-runtime",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.4",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -27,6 +27,7 @@
     "stylis": "^4.2.0"
   },
   "devDependencies": {
+    "@mui/material": "^5.14.18",
     "@mui/system": "^5.14.18",
     "@types/babel__core": "^7.20.3",
     "@types/babel__helper-module-imports": "^7.18.2",
