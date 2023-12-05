@@ -135,8 +135,8 @@ export default function styled(tag, options = {}) {
           ref={ref}
           className={finalClassName}
           style={{
-            ...style,
             ...varStyles,
+            ...style,
           }}
         />
       );
@@ -149,8 +149,8 @@ export default function styled(tag, options = {}) {
         ref={ref}
         className={finalClassName}
         style={{
-          ...style,
           ...varStyles,
+          ...style,
         }}
       />
     );
