@@ -23,6 +23,7 @@ const zeroPluginOptions = {
   theme,
   cssVariablesPrefix: 'app',
   transformLibraries: ['local-ui-lib'],
+  displayName: true,
 };
 
 /**

@@ -19,6 +19,7 @@ const zeroPluginOptions = {
   cssVariablesPrefix: 'app',
   transformLibraries: ['local-ui-lib'],
   sourceMap: true,
+  displayName: true,
 };
 
 /** @type {import('next').NextConfig} */
