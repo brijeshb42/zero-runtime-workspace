@@ -2,7 +2,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import { internal_resolveProps as resolveProps } from '@mui/utils';
-import { styled } from '@brijeshb42/zero-runtime';
+import { styled } from '@mui/zero-runtime';
 import { unstable_composeClasses as composeClasses } from '@mui/base/composeClasses';
 import { shouldForwardProp } from '@mui/system/createStyled';
 import { alpha } from '@mui/system/colorManipulator';

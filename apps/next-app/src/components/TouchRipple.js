@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import clsx from 'clsx';
-import { keyframes, styled } from '@brijeshb42/zero-runtime';
+import { keyframes, styled } from '@mui/zero-runtime';
 import { useThemeProps } from '@mui/material/styles';
 import Ripple from './Ripple';
 import touchRippleClasses from './touchRippleClasses';

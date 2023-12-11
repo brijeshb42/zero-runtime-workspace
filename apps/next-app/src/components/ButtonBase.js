@@ -2,7 +2,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import { unstable_composeClasses as composeClasses } from '@mui/base/composeClasses';
-import { styled } from '@brijeshb42/zero-runtime';
+import { styled } from '@mui/zero-runtime';
 import useThemeProps from '@mui/material/styles/useThemeProps';
 import useForkRef from '@mui/material/utils/useForkRef';
 import useEventCallback from '@mui/material/utils/useEventCallback';
