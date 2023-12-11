@@ -154,7 +154,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
         filename: id,
         babelrc: false,
         configFile: false,
-        plugins: [['@brijeshb42/zero-runtime/exports/sx-plugin']],
+        plugins: [[`${process.env.RUNTIME_PACKAGE_NAME}/exports/sx-plugin`]],
       });
       if (!result) {
         return null;
