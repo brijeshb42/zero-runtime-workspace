@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { styled } from '@brijeshb42/zero-runtime';
+import { styled } from '@mui/zero-runtime';
 import { Inter } from 'next/font/google';
-import '@brijeshb42/zero-runtime/styles.css';
+import '@mui/zero-runtime/styles.css';
 
 import './globals.css';
 

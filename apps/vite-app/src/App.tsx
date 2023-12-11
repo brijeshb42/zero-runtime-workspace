@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled } from '@brijeshb42/zero-runtime';
+import { styled } from '@mui/zero-runtime';
 import { Button, bounceAnim } from 'local-ui-lib';
 import Slider from './Slider/ZeroSlider';
 

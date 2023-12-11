@@ -16,7 +16,7 @@ import {
   generateCss,
   preprocessor as basePreprocessor,
   generateThemeTokens,
-} from '@brijeshb42/zero-runtime/utils';
+} from '@mui/zero-runtime/utils';
 
 type NextMeta = {
   type: 'next';
@@ -272,9 +272,9 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
             transformInclude(id) {
               return (
                 // this file should exist in the package
-                id.endsWith('@brijeshb42/zero-runtime/styles.css') ||
+                id.endsWith('@mui/zero-runtime/styles.css') ||
                 id.endsWith('/runtime/styles.css') ||
-                id.endsWith('@brijeshb42/zero-runtime/theme') ||
+                id.endsWith('@mui/zero-runtime/theme') ||
                 id.endsWith('/runtime/theme.js')
               );
             },
@@ -290,10 +290,10 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
           }
         : {
             resolveId(source: string) {
-              if (source === '@brijeshb42/zero-runtime/styles.css') {
+              if (source === '@mui/zero-runtime/styles.css') {
                 return VIRTUAL_CSS_FILE;
               }
-              if (source === '@brijeshb42/zero-runtime/theme') {
+              if (source === '@mui/zero-runtime/theme') {
                 return VIRTUAL_THEME_FILE;
               }
               return null;

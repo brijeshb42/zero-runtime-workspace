@@ -48,13 +48,13 @@ importers:
 
   apps/local-ui-lib:
     dependencies:
-      '@brijeshb42/zero-runtime':
+      '@mui/zero-runtime':
         specifier: workspace:^
         version: link:../../packages/runtime
 
   apps/next-app:
     dependencies:
-      '@brijeshb42/zero-runtime':
+      '@mui/zero-runtime':
         specifier: workspace:^
         version: link:../../packages/runtime
       next:
@@ -67,7 +67,7 @@ importers:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@brijeshb42/zero-next-plugin':
+      '@mui/zero-next-plugin':
         specifier: workspace:^
         version: link:../../packages/next
       '@mui/material':
@@ -91,7 +91,7 @@ importers:
 
   apps/vite-app:
     dependencies:
-      '@brijeshb42/zero-runtime':
+      '@mui/zero-runtime':
         specifier: workspace:^
         version: link:../../packages/runtime
       '@mui/base':
@@ -122,7 +122,7 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.23.2
         version: 7.23.2(@babel/core@7.23.2)
-      '@brijeshb42/zero-vite-plugin':
+      '@mui/zero-vite-plugin':
         specifier: workspace:^
         version: link:../../packages/vite
       '@mui/material':
@@ -146,7 +146,7 @@ importers:
 
   apps/wp-app:
     dependencies:
-      '@brijeshb42/zero-runtime':
+      '@mui/zero-runtime':
         specifier: workspace:^
         version: link:../../packages/runtime
       '@mui/material':
@@ -162,7 +162,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@brijeshb42/zero-unplugin':
+      '@mui/zero-unplugin':
         specifier: workspace:^
         version: link:../../packages/unplugin
       '@types/react':
@@ -195,7 +195,7 @@ importers:
 
   packages/next:
     dependencies:
-      '@brijeshb42/zero-unplugin':
+      '@mui/zero-unplugin':
         specifier: workspace:^
         version: link:../unplugin
     devDependencies:
@@ -300,7 +300,7 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
     devDependencies:
-      '@brijeshb42/zero-runtime':
+      '@mui/zero-runtime':
         specifier: workspace:^
         version: link:../runtime
       '@types/babel__core':
@@ -315,7 +315,7 @@ importers:
       '@babel/plugin-syntax-typescript':
         specifier: ^7.22.5
         version: 7.22.5(@babel/core@7.23.2)
-      '@brijeshb42/zero-runtime':
+      '@mui/zero-runtime':
         specifier: workspace:^
         version: link:../runtime
       '@linaria/babel-preset':

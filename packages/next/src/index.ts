@@ -4,7 +4,7 @@ import { findPagesDir } from 'next/dist/lib/find-pages-dir';
 import {
   webpack as zeroWebpackPlugin,
   PluginOptions as BaseZeroPluginConfig,
-} from '@brijeshb42/zero-unplugin';
+} from '@mui/zero-unplugin';
 
 export type ZeroPluginConfig = BaseZeroPluginConfig & {
   asyncResolve?: (what: string) => string | null;

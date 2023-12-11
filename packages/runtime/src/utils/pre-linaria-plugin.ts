@@ -6,7 +6,7 @@ export const babelPlugin = declare((api) => {
   api.assertVersion(7);
   const { types: t } = api;
   return {
-    name: '@brijeshb42/zero-babel-plugin',
+    name: '@mui/zero-babel-plugin',
     visitor: {
       JSXAttribute(path) {
         const namePath = path.get('name');
@@ -38,11 +38,7 @@ export const babelPlugin = declare((api) => {
           return;
         }
         sxObjectExtractor(expressionPath);
-        const sxIdentifier = addNamed(
-          namePath,
-          'sx',
-          '@brijeshb42/zero-runtime',
-        );
+        const sxIdentifier = addNamed(namePath, 'sx', '@mui/zero-runtime');
         expressionPath.replaceWith(
           t.callExpression(sxIdentifier, [
             expressionPath.node,
@@ -74,11 +70,7 @@ export const babelPlugin = declare((api) => {
         }
         const jsxElement = parentJsxCall.get('arguments')[0];
         sxObjectExtractor(valuePath);
-        const sxIdentifier = addNamed(
-          keyPath,
-          'sx',
-          '@brijeshb42/zero-runtime',
-        );
+        const sxIdentifier = addNamed(keyPath, 'sx', '@mui/zero-runtime');
         valuePath.replaceWith(
           t.callExpression(sxIdentifier, [valuePath.node, jsxElement.node]),
         );

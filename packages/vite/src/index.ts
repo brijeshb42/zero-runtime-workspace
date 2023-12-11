@@ -3,7 +3,7 @@ import {
   generateCss,
   preprocessor as basePreprocessor,
   generateThemeTokens,
-} from '@brijeshb42/zero-runtime/utils';
+} from '@mui/zero-runtime/utils';
 import { transformAsync } from '@babel/core';
 import baseZeroVitePlugin, { type VitePluginOptions } from './zero-vite-plugin';
 
@@ -82,9 +82,9 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
       name: 'vite-mui-theme-injection-plugin',
       enforce: 'pre',
       resolveId(source) {
-        if (source === '@brijeshb42/zero-runtime/styles.css') {
+        if (source === '@mui/zero-runtime/styles.css') {
           return VIRTUAL_CSS_FILE;
-        } else if (source === '@brijeshb42/zero-runtime/theme') {
+        } else if (source === '@mui/zero-runtime/theme') {
           return VIRTUAL_THEME_FILE;
         }
         return null;
@@ -126,7 +126,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
             filename,
             babelrc: false,
             configFile: false,
-            plugins: [['@brijeshb42/zero-runtime/exports/sx-plugin']],
+            plugins: [['@mui/zero-runtime/exports/sx-plugin']],
           });
           return {
             code: result?.code ?? code,

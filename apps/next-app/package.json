@@ -9,14 +9,14 @@
     "clean": "rimraf .next"
   },
   "dependencies": {
-    "@brijeshb42/zero-runtime": "workspace:^",
+    "@mui/zero-runtime": "workspace:^",
     "react": "^18",
     "react-dom": "^18",
     "next": "14.0.1"
   },
   "devDependencies": {
     "@mui/material": "^5.14.16",
-    "@brijeshb42/zero-next-plugin": "workspace:^",
+    "@mui/zero-next-plugin": "workspace:^",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -1,4 +1,4 @@
-import { keyframes, styled } from '@brijeshb42/zero-runtime';
+import { keyframes, styled } from '@mui/zero-runtime';
 
 export const bounceAnim = keyframes({
   'from, 20%, 53%, 80%, to': {

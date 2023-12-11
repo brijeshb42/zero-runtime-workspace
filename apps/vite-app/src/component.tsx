@@ -1,4 +1,4 @@
-import { styled } from '@brijeshb42/zero-runtime';
+import { styled } from '@mui/zero-runtime';
 
 export function Component() {
   return null;

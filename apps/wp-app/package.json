@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "@mui/material": "^5.14.16",
-    "@brijeshb42/zero-runtime": "workspace:^",
+    "@mui/zero-runtime": "workspace:^",
     "local-ui-lib": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@brijeshb42/zero-unplugin": "workspace:^",
+    "@mui/zero-unplugin": "workspace:^",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
     "css-loader": "^6.8.1",

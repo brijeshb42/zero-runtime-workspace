@@ -25,7 +25,7 @@ import type { PluginOptions, Preprocessor } from '@linaria/babel-preset';
 import { linariaLogger } from '@linaria/logger';
 import type { IPerfMeterOptions } from '@linaria/utils';
 import { createPerfMeter, getFileIdx, syncResolve } from '@linaria/utils';
-import { type PluginCustomOptions } from '@brijeshb42/zero-runtime/utils';
+import { type PluginCustomOptions } from '@mui/zero-runtime/utils';
 
 export type VitePluginOptions = {
   debug?: IPerfMeterOptions | false | null | undefined;

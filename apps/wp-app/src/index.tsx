@@ -1,8 +1,8 @@
-import '@brijeshb42/zero-runtime/styles.css';
+import '@mui/zero-runtime/styles.css';
 
 import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { styled } from '@brijeshb42/zero-runtime';
+import { styled } from '@mui/zero-runtime';
 import { Button, bounceAnim } from 'local-ui-lib';
 
 const LocalButton = styled.button<{ isRed?: boolean }>({

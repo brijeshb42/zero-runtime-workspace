@@ -10,7 +10,7 @@
   "dependencies": {
     "@mui/base": "^5.0.0-beta.24",
     "@mui/system": "^5.14.18",
-    "@brijeshb42/zero-runtime": "workspace:^",
+    "@mui/zero-runtime": "workspace:^",
     "clsx": "^2.0.0",
     "local-ui-lib": "workspace:^",
     "react": "^18.2.0",
@@ -22,7 +22,7 @@
     "@babel/preset-typescript": "^7.23.2",
     "@mui/material": "^5.14.18",
     "@mui/utils": "^5.14.18",
-    "@brijeshb42/zero-vite-plugin": "workspace:^",
+    "@mui/zero-vite-plugin": "workspace:^",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
     "@vitejs/plugin-react": "^4.1.0",

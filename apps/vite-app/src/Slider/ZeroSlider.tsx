@@ -9,7 +9,7 @@ import {
   getSliderUtilityClass,
 } from '@mui/material/Slider';
 import { isHostComponent, useSlotProps } from '@mui/base/utils';
-import { styled } from '@brijeshb42/zero-runtime';
+import { styled } from '@mui/zero-runtime';
 import { capitalize } from '@mui/material/utils';
 import SliderValueLabel from '@mui/material/Slider/SliderValueLabel';
 import { useSlider, valueToPercent } from '@mui/base/useSlider';

@@ -1,6 +1,6 @@
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import reactPlugin from '@vitejs/plugin-react';
-import { zeroVitePlugin as zeroPlugin } from '@brijeshb42/zero-vite-plugin';
+import { zeroVitePlugin as zeroPlugin } from '@mui/zero-vite-plugin';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 
 const theme = extendTheme();
