@@ -170,18 +170,33 @@ export default function zeroVitePlugin({
         throw new Error(`Could not resolve ${what}`);
       };
 
-      const transformServices = {
-        options: {
-          filename: id,
-          root: process.cwd(),
-          preprocessor,
-          pluginOptions: rest,
-        },
-        cache,
-        eventEmitter: emitter,
-      };
+      const presets = new Set(
+        Array.isArray(rest.babelOptions?.presets)
+          ? rest.babelOptions?.presets
+          : [],
+      );
+      presets.add('@babel/preset-typescript');
 
-      const result = await transform(transformServices, code, asyncResolve);
+      const result = await transform(
+        {
+          options: {
+            filename: id,
+            root: process.cwd(),
+            preprocessor,
+            pluginOptions: {
+              ...rest,
+              babelOptions: {
+                ...rest.babelOptions,
+                presets: Array.from(presets),
+              },
+            },
+          },
+          cache,
+          eventEmitter: emitter,
+        },
+        code,
+        asyncResolve,
+      );
 
       let { cssText, dependencies } = result;
 
