@@ -22,7 +22,7 @@ import {
   TransformCacheCollection,
 } from '@linaria/babel-preset';
 import type { PluginOptions, Preprocessor } from '@linaria/babel-preset';
-import { createCustomDebug } from '@linaria/logger';
+import { linariaLogger } from '@linaria/logger';
 import type { IPerfMeterOptions } from '@linaria/utils';
 import { createPerfMeter, getFileIdx, syncResolve } from '@linaria/utils';
 import { type PluginCustomOptions } from '@mui/zero-runtime/utils';
@@ -112,6 +112,7 @@ export default function zeroVitePlugin({
       if (id in cssLookup) {
         return null;
       }
+
       let shouldReturn = url.includes('node_modules');
 
       if (shouldReturn) {
@@ -130,8 +131,8 @@ export default function zeroVitePlugin({
         return null;
       }
 
-      const log = createCustomDebug('rollup', getFileIdx(id));
-      log('Vite transform', id);
+      const log = linariaLogger.extend('vite');
+      log('Vite transform', getFileIdx(id));
 
       const asyncResolve = async (
         what: string,
@@ -169,17 +170,32 @@ export default function zeroVitePlugin({
         throw new Error(`Could not resolve ${what}`);
       };
 
+      const presets = new Set(
+        Array.isArray(rest.babelOptions?.presets)
+          ? rest.babelOptions?.presets
+          : [],
+      );
+      presets.add('@babel/preset-typescript');
+
       const result = await transform(
-        code,
         {
-          filename: id,
-          preprocessor,
-          pluginOptions: rest,
+          options: {
+            filename: id,
+            root: process.cwd(),
+            preprocessor,
+            pluginOptions: {
+              ...rest,
+              babelOptions: {
+                ...rest.babelOptions,
+                presets: Array.from(presets),
+              },
+            },
+          },
+          cache,
+          eventEmitter: emitter,
         },
+        code,
         asyncResolve,
-        {},
-        cache,
-        emitter,
       );
 
       let { cssText, dependencies } = result;
@@ -187,6 +203,7 @@ export default function zeroVitePlugin({
       if (!cssText) {
         return null;
       }
+
       dependencies ??= [];
 
       const slug = slugify(cssText);

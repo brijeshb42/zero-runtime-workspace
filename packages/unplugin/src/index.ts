@@ -46,6 +46,7 @@ export type PluginOptions<Theme = unknown> = {
   sourceMap?: boolean;
   meta?: Meta;
   asyncResolve?: (what: string) => string | null;
+  transformSx?: boolean;
 } & Partial<LinariaPluginOptions>;
 
 const extensions = [
@@ -105,6 +106,7 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
     asyncResolve: asyncResolveOpt,
     debug = false,
     sourceMap = false,
+    transformSx = true,
     ...rest
   } = options;
   const themeArgs = { theme };
@@ -140,6 +142,107 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
       injectInRoot: injectDefaultThemeInRoot,
     },
   );
+
+  const babelTransformPlugin: UnpluginOptions = {
+    name: 'zero-plugin-transform-babel',
+    enforce: 'post',
+    transformInclude(id) {
+      return isZeroRuntimeProcessableFile(id, transformLibraries);
+    },
+    async transform(code, id) {
+      const result = await transformAsync(code, {
+        filename: id,
+        babelrc: false,
+        configFile: false,
+        plugins: [[`${process.env.RUNTIME_PACKAGE_NAME}/exports/sx-plugin`]],
+      });
+      if (!result) {
+        return null;
+      }
+      return {
+        code: result.code ?? code,
+        map: result.map,
+      };
+    },
+  };
+  const linariaTransformPlugin: UnpluginOptions = {
+    name: 'zero-plugin-transform-linaria',
+    enforce: 'post',
+    buildEnd() {
+      onDone(process.cwd());
+    },
+    transformInclude(id) {
+      return isZeroRuntimeProcessableFile(id, transformLibraries);
+    },
+    async transform(code, id) {
+      const asyncResolve: typeof asyncResolveFallback = async (
+        what,
+        importer,
+        stack,
+      ) => {
+        const result = asyncResolveOpt?.(what);
+        if (typeof result === 'string') {
+          return result;
+        }
+        return await asyncResolveFallback(what, importer, stack);
+      };
+      const transformServices = {
+        options: {
+          filename: id,
+          root: process.cwd(),
+          preprocessor,
+          pluginOptions: linariaOptions,
+        },
+        cache,
+        eventEmitter: emitter,
+      };
+
+      const result = await transform(transformServices, code, asyncResolve);
+
+      if (!result.cssText) {
+        return null;
+      }
+
+      let { cssText } = result;
+      if (isNext && !outputCss) {
+        return {
+          code: result.code,
+          map: result.sourceMap,
+        };
+      }
+      const slug = slugify(cssText);
+      const cssFilename = `${slug}.zero.css`;
+
+      if (sourceMap && result.cssSourceMapText) {
+        const map = Buffer.from(result.cssSourceMapText).toString('base64');
+        cssText += `/*# sourceMappingURL=data:application/json;base64,${map}*/`;
+      }
+
+      // Virtual modules do not work consistently in Next.js (the build is done at least
+      // thrice) resulting in error in subsequent builds. So we use a placeholder CSS
+      // file with the actual CSS content as part of the query params.
+      if (isNext) {
+        const data = `${meta.placeholderCssFile}?${encodeURIComponent(
+          JSON.stringify({
+            filename: cssFilename,
+            source: cssText,
+          }),
+        )}`;
+        return {
+          code: `import ${JSON.stringify(data)};\n${result.code}`,
+          map: result.sourceMap,
+        };
+      } else {
+        const cssId = `./${cssFilename}`;
+        cssFileLookup.set(cssId, cssFilename);
+        cssLookup.set(cssFilename, cssText);
+        return {
+          code: `import ${JSON.stringify(`./${cssFilename}`)};\n${result.code}`,
+          map: result.sourceMap,
+        };
+      }
+    },
+  };
 
   const plugins: Array<UnpluginOptions> = [
     {
@@ -208,104 +311,12 @@ export const plugin = createUnplugin<PluginOptions, true>((options) => {
             },
           }),
     },
-    {
-      name: 'zero-plugin-transform-babel',
-      enforce: 'post',
-      transformInclude(id) {
-        return isZeroRuntimeProcessableFile(id, transformLibraries);
-      },
-      async transform(code, id) {
-        const result = await transformAsync(code, {
-          filename: id,
-          babelrc: false,
-          configFile: false,
-          plugins: [['@mui/zero-runtime/exports/sx-plugin']],
-        });
-        if (!result) {
-          return null;
-        }
-        return {
-          code: result.code ?? code,
-          map: result.map,
-        };
-      },
-    },
-    {
-      name: 'zero-plugin-transform-linaria',
-      enforce: 'post',
-      buildEnd() {
-        onDone(process.cwd());
-      },
-      transformInclude(id) {
-        return isZeroRuntimeProcessableFile(id, transformLibraries);
-      },
-      async transform(code, id) {
-        const asyncResolve: typeof asyncResolveFallback = async (
-          what,
-          importer,
-          stack,
-        ) => {
-          const result = asyncResolveOpt?.(what);
-          if (typeof result === 'string') {
-            return result;
-          }
-          return await asyncResolveFallback(what, importer, stack);
-        };
-        const result = await transform(
-          code,
-          {
-            filename: id,
-            preprocessor,
-            pluginOptions: linariaOptions,
-          },
-          asyncResolve,
-          {},
-          cache,
-          emitter,
-        );
-        let { cssText } = result;
-        if (!cssText || (isNext && !outputCss)) {
-          return {
-            code: result.code,
-            map: result.sourceMap,
-          };
-        }
-        const slug = slugify(cssText);
-        const cssFilename = `${slug}.zero.css`;
-
-        if (sourceMap && result.cssSourceMapText) {
-          const map = Buffer.from(result.cssSourceMapText).toString('base64');
-          cssText += `/*# sourceMappingURL=data:application/json;base64,${map}*/`;
-        }
-
-        // Virtual modules do not work consistently in Next.js (the build is done at least
-        // thrice) resulting in error in subsequent builds. So we use a placeholder CSS
-        // file with the actual CSS content as part of the query params.
-        if (isNext) {
-          const data = `${meta.placeholderCssFile}?${encodeURIComponent(
-            JSON.stringify({
-              filename: cssFilename,
-              source: cssText,
-            }),
-          )}`;
-          return {
-            code: `import ${JSON.stringify(data)};\n${result.code}`,
-            map: result.sourceMap,
-          };
-        } else {
-          const cssId = `./${cssFilename}`;
-          cssFileLookup.set(cssId, cssFilename);
-          cssLookup.set(cssFilename, cssText);
-          return {
-            code: `import ${JSON.stringify(`./${cssFilename}`)};\n${
-              result.code
-            }`,
-            map: result.sourceMap,
-          };
-        }
-      },
-    },
   ];
+
+  if (transformSx) {
+    plugins.push(babelTransformPlugin);
+  }
+  plugins.push(linariaTransformPlugin);
 
   // This is already handled separately for Next.js using `placeholderCssFile`
   if (!isNext) {

@@ -1,6 +1,6 @@
 {
   "name": "@mui/zero-unplugin",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.5",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -12,14 +12,17 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
-    "@linaria/babel-preset": "^4.5.4",
-    "@linaria/logger": "^4.5.0",
-    "@linaria/utils": "^4.5.3",
-    "@mui/zero-runtime": "workspace:^",
-    "unplugin": "^1.5.0"
+    "@linaria/babel-preset": "^5.0.4",
+    "@linaria/logger": "^5.0.0",
+    "@linaria/utils": "^5.0.2",
+    "unplugin": "^1.5.1"
   },
   "devDependencies": {
+    "@mui/zero-runtime": "workspace:^",
     "@types/babel__core": "^7.20.3"
+  },
+  "peerDependencies": {
+    "@mui/zero-runtime": "workspace:^"
   },
   "sideEffects": false,
   "publishConfig": {
@@ -27,8 +30,6 @@
   },
   "files": [
     "dist",
-    "next-font.js",
-    "next-image.js",
     "package.json"
   ]
 }

@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
-    "@babel/plugin-syntax-typescript": "^7.22.5",
-    "@linaria/babel-preset": "^4.5.4",
-    "@linaria/logger": "^4.5.0",
-    "@linaria/utils": "^4.5.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@linaria/babel-preset": "^5.0.4",
+    "@linaria/logger": "^5.0.0",
+    "@linaria/utils": "^5.0.2",
     "@mui/zero-runtime": "workspace:^"
   },
   "devDependencies": {

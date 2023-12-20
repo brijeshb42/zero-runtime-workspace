@@ -3,10 +3,12 @@ import type { NextConfig } from 'next';
 import { findPagesDir } from 'next/dist/lib/find-pages-dir';
 import {
   webpack as zeroWebpackPlugin,
-  PluginOptions as ZeroPluginConfig,
+  PluginOptions as BaseZeroPluginConfig,
 } from '@mui/zero-unplugin';
 
-export type { ZeroPluginConfig };
+export type ZeroPluginConfig = BaseZeroPluginConfig & {
+  asyncResolve?: (what: string) => string | null;
+};
 
 const extractionFile = path.join(
   path.dirname(require.resolve('../package.json')),
@@ -17,7 +19,7 @@ export function withZeroPlugin(
   nextConfig: NextConfig,
   zeroConfig: ZeroPluginConfig,
 ) {
-  const { babelOptions, ...rest } = zeroConfig;
+  const { babelOptions, asyncResolve, ...rest } = zeroConfig;
   const webpack: Exclude<NextConfig['webpack'], undefined> = (
     config,
     context,
@@ -57,11 +59,11 @@ export function withZeroPlugin(
         },
         asyncResolve(what) {
           if (what === 'next/image') {
-            return require.resolve('@mui/zero-unplugin/next-image');
+            return require.resolve('../next-image');
           } else if (what.startsWith('next/font')) {
-            return require.resolve('@mui/zero-unplugin/next-font');
+            return require.resolve('../next-font');
           }
-          return null;
+          return asyncResolve?.(what) ?? null;
         },
         babelOptions: {
           ...babelOptions,

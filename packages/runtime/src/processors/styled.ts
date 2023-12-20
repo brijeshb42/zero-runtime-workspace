@@ -16,7 +16,7 @@ import type {
   ConstValue,
 } from '@linaria/utils';
 import { parseExpression } from '@babel/parser';
-import type { SourceLocation } from '@babel/types';
+import type { ObjectExpression, SourceLocation } from '@babel/types';
 import type { PluginCustomOptions } from '../utils/cssFnValueToVariable';
 import { cssFnValueToVariable } from '../utils/cssFnValueToVariable';
 import { processCssObject } from '../utils/processCssObject';
@@ -135,7 +135,7 @@ export class StyledProcessor extends BaseProcessor {
       ['callee', ['call', 'member'], ['call', 'template']],
       `Invalid use of ${this.tagSource.imported} tag.`,
     );
-    const [call, memberOrCall, styleCall] = params;
+    const [callee, memberOrCall, styleCall] = params;
     const [callType, componentArg, componentMetaArg] = memberOrCall;
     const [, ...styleArgs] = styleCall;
     this.componentMetaArg =
@@ -180,8 +180,8 @@ export class StyledProcessor extends BaseProcessor {
         }
       }
     });
-    if (call[0] === 'callee') {
-      this.originalLocation = call[1].loc ?? null;
+    if (callee[0] === 'callee') {
+      this.originalLocation = callee[1].loc ?? null;
     }
   }
 
@@ -225,7 +225,7 @@ export class StyledProcessor extends BaseProcessor {
    */
   build(values: ValueCache): void {
     const themeImportIdentifier = this.astService.addDefaultImport(
-      '@mui/zero-runtime/theme',
+      `${process.env.PACKAGE_NAME}/theme`,
       'theme',
     );
     // all the variant definitions are collected here so that we can
@@ -282,7 +282,7 @@ export class StyledProcessor extends BaseProcessor {
   /**
    * This is the runtime phase where all of the css have been transformed and we finally want to replace the `styled` call with the code that we want in the final bundle. In this particular case, we replace the `styled` calls with
    * ```js
-   * const Component = styled('div', {
+   * const Component = styled('div')({
    *  displayName: 'Component',
    *  name: 'MuiSlider',
    *  slot: 'root',
@@ -357,10 +357,12 @@ export class StyledProcessor extends BaseProcessor {
       );
     }
 
+    let componentMetaExpression: ObjectExpression | undefined;
+
     if (this.componentMetaArg) {
       const parsedMeta = parseExpression(this.componentMetaArg.source);
       if (parsedMeta.type === 'ObjectExpression') {
-        argProperties.push(...parsedMeta.properties);
+        componentMetaExpression = parsedMeta as ObjectExpression;
       }
     }
     if (this.defaultProps && Object.keys(this.defaultProps).length > 0) {
@@ -371,13 +373,22 @@ export class StyledProcessor extends BaseProcessor {
         ),
       );
     }
-    this.replacer(
-      t.callExpression(t.addNamedImport('styled', '@mui/zero-runtime'), [
-        componentName,
-        t.objectExpression(argProperties),
-      ]),
-      true,
+
+    const styledImportIdentifier = t.addNamedImport(
+      this.tagSource.imported,
+      this.tagSource.source,
     );
+    const styledCall = t.callExpression(
+      styledImportIdentifier,
+      componentMetaExpression
+        ? [componentName, componentMetaExpression]
+        : [componentName],
+    );
+    const mainCall = t.callExpression(styledCall, [
+      t.objectExpression(argProperties),
+    ]);
+
+    this.replacer(mainCall, true);
   }
 
   /**
