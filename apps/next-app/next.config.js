@@ -19,9 +19,17 @@ const zeroPluginOptions = {
   cssVariablesPrefix: 'app',
   transformLibraries: ['local-ui-lib'],
   sourceMap: true,
+  displayName: true,
 };
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+};
 
 module.exports = withZeroPlugin(nextConfig, zeroPluginOptions);

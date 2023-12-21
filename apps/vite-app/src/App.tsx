@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { styled } from '@mui/zero-runtime';
+import { styled, generateAtomics } from '@mui/zero-runtime';
+import type { Breakpoint } from '@mui/system';
 import { Button, bounceAnim } from 'local-ui-lib';
 import Slider from './Slider/ZeroSlider';
 
@@ -10,6 +11,26 @@ const ShowCaseDiv = styled('div')({
   },
 });
 
+const atomics = generateAtomics(({ theme }) => ({
+  conditions: Object.entries(theme.breakpoints.values).reduce(
+    (acc, [key, value]) => {
+      if (key === 'xs') {
+        return acc;
+      }
+      acc[key as Breakpoint] = theme.breakpoints.up(value);
+      return acc;
+    },
+    {} as Record<Breakpoint, string>,
+  ),
+  defaultCondition: 'sm',
+  properties: {
+    display: ['none', 'flex', 'block', 'grid', 'inline-flex', 'inline-block'],
+    flexDirection: ['row', 'column', 'row-reverse', 'column-reverse'],
+    justifyContent: ['center', 'space-between'],
+    alignItems: ['center'],
+  },
+}));
+
 const HalfWidth = styled.div<{ isRed?: boolean }>(({ theme }) => ({
   marginLeft: 20,
   width: '50%',
@@ -17,7 +38,6 @@ const HalfWidth = styled.div<{ isRed?: boolean }>(({ theme }) => ({
   padding: 20,
   border: '1px solid #ccc',
   color: ({ isRed }) => {
-    console.log(theme);
     if (isRed) {
       return (theme.vars || theme).palette.primary.main;
     }
@@ -140,6 +160,23 @@ export function App({ isRed }: AppProps) {
             onChange={(ev, val) => setValue(val as number)}
           />
         </HalfWidth>
+      </div>
+      <div>
+        <h1>Atomics Demo</h1>
+        <div
+          {...atomics({
+            display: 'flex',
+            flexDirection: {
+              lg: 'row',
+              md: 'column',
+              sm: 'column',
+            },
+            justifyContent: 'space-between',
+          })}
+        >
+          <span>Hello1</span>
+          <span>Hello2</span>
+        </div>
       </div>
     </div>
   );
