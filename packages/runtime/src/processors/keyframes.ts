@@ -45,7 +45,7 @@ export class KeyframesProcessor extends BaseProcessor {
 
   build(values: ValueCache) {
     if (this.artifacts.length > 0) {
-      throw new Error('Tag is already built');
+      throw new Error(`MUI: "${this.tagSource.imported}" is already built`);
     }
 
     const [callType] = this.callParam;
