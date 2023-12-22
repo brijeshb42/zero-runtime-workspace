@@ -18,6 +18,7 @@ export default defineConfig({
     zeroPlugin({
       theme,
       transformLibraries: ['local-library'],
+      displayName: true,
     }),
     reactPlugin(),
     splitVendorChunkPlugin(),

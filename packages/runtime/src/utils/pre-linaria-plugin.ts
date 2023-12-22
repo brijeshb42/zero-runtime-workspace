@@ -38,7 +38,11 @@ export const babelPlugin = declare((api) => {
           return;
         }
         sxObjectExtractor(expressionPath);
-        const sxIdentifier = addNamed(namePath, 'sx', '@mui/zero-runtime');
+        const sxIdentifier = addNamed(
+          namePath,
+          'sx',
+          process.env.PACKAGE_NAME as string,
+        );
         expressionPath.replaceWith(
           t.callExpression(sxIdentifier, [
             expressionPath.node,
@@ -70,7 +74,11 @@ export const babelPlugin = declare((api) => {
         }
         const jsxElement = parentJsxCall.get('arguments')[0];
         sxObjectExtractor(valuePath);
-        const sxIdentifier = addNamed(keyPath, 'sx', '@mui/zero-runtime');
+        const sxIdentifier = addNamed(
+          keyPath,
+          'sx',
+          process.env.PACKAGE_NAME as string,
+        );
         valuePath.replaceWith(
           t.callExpression(sxIdentifier, [valuePath.node, jsxElement.node]),
         );
