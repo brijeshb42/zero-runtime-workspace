@@ -89,6 +89,11 @@ function generateCssForTheme(theme: Theme, prefix = ['']) {
 function generateCssFromExtendTheme(theme: ExtendTheme, injectInRoot = false) {
   const { cssVarPrefix = 'mui' } = theme;
   let cssStr = '';
+  const cssObject = theme.generateCssVars().css;
+  const cssClass = css({
+    ':root': cssObject,
+  });
+  cssStr += cache.registered[cssClass];
   Object.keys(theme.colorSchemes).forEach((colorScheme) => {
     let selector =
       theme.getColorSchemeSelector?.(colorScheme) ??
