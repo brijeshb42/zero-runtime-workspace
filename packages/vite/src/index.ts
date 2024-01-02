@@ -1,26 +1,20 @@
 import type { Plugin } from 'vite';
-import {
-  generateCss,
-  preprocessor as basePreprocessor,
-  generateThemeTokens,
-} from '@mui/zero-runtime/utils';
+import { preprocessor as basePreprocessor } from '@mui/zero-runtime/utils';
 import { transformAsync } from '@babel/core';
+import { Interpolation, serializeStyles } from '@emotion/serialize';
 import baseZeroVitePlugin, { type VitePluginOptions } from './zero-vite-plugin';
+
+type BaseTheme = {
+  cssVarPrefix: string;
+  colorSchemes: Record<string, unknown>;
+  generateCssVars: (colorScheme?: string) => { css: Record<string, string> };
+};
 
 export interface ZeroVitePluginOptions extends VitePluginOptions {
   /**
    * The theme object that you want to be passed to the `styled` function
    */
-  theme: unknown;
-  /**
-   * Prefix string to use in the generated css variables.
-   */
-  cssVariablesPrefix?: string;
-  /**
-   * Whether the css variables for the default theme should target the :root selector or not.
-   * @default true
-   */
-  injectDefaultThemeInRoot?: boolean;
+  theme: BaseTheme;
 }
 
 const VIRTUAL_CSS_FILE = `\0zero-runtime-styles.css`;
@@ -58,24 +52,27 @@ function isZeroRuntimeProcessableFile(
 
 export function zeroVitePlugin(options: ZeroVitePluginOptions) {
   const {
-    cssVariablesPrefix = 'mui',
-    injectDefaultThemeInRoot = true,
     theme,
     babelOptions = {},
     preprocessor = basePreprocessor,
     transformLibraries = [],
     ...rest
   } = options ?? {};
-  const isExtendTheme = !!(
-    theme &&
-    typeof theme === 'object' &&
-    'vars' in theme &&
-    theme.vars
-  );
-  const varPrefix: string =
-    isExtendTheme && 'cssVarPrefix' in theme
-      ? (theme.cssVarPrefix as string) ?? cssVariablesPrefix
-      : cssVariablesPrefix;
+
+  // create stylesheet as object
+  const stylesheetObj: Interpolation<unknown> = {
+    ':root': theme.generateCssVars().css,
+  };
+  Object.entries(theme.colorSchemes).forEach(([key]) => {
+    stylesheetObj[
+      `${key === 'light' ? ':root, ' : ''}[data-${
+        theme.cssVarPrefix
+      }-color-scheme="${key}"]`
+    ] = theme.generateCssVars(key).css;
+  });
+
+  // use emotion to serialize the object to css string
+  const { styles: stylesheet } = serializeStyles([stylesheetObj]);
 
   function injectMUITokensPlugin(): Plugin {
     return {
@@ -91,21 +88,9 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
       },
       load(id) {
         if (id === VIRTUAL_CSS_FILE) {
-          return generateCss(
-            {
-              cssVariablesPrefix: varPrefix,
-              themeArgs: {
-                theme,
-              },
-            },
-            {
-              defaultThemeKey: 'theme',
-              injectInRoot: injectDefaultThemeInRoot,
-            },
-          );
+          return stylesheet;
         } else if (id === VIRTUAL_THEME_FILE) {
-          const tokens = generateThemeTokens(theme, varPrefix);
-          return `export default ${JSON.stringify(tokens)};`;
+          return `export default ${JSON.stringify(theme)};`;
         }
         return null;
       },
@@ -140,7 +125,7 @@ export function zeroVitePlugin(options: ZeroVitePluginOptions) {
   }
 
   const zeroPlugin = baseZeroVitePlugin({
-    cssVariablesPrefix: varPrefix,
+    cssVariablesPrefix: theme.cssVarPrefix,
     themeArgs: {
       theme,
     },
